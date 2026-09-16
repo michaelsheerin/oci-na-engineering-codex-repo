@@ -279,6 +279,10 @@ input:focus, select:focus { outline: 3px solid rgba(189, 44, 44, .18); border-co
 .rich-table th, .rich-table td { padding: 13px 15px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .rich-table th { background: var(--surface); color: #44515d; font-size: .8rem; font-weight: 760; }
 .rich-table td { color: var(--muted); font-size: .9rem; line-height: 1.45; }
+.rich-table .table-markdown .rich-content h3 { margin: 0 0 8px; font-size: .98rem; }
+.rich-table .table-markdown .rich-content p { margin: 0 0 8px; }
+.rich-table .table-markdown .rich-content ol, .rich-table .table-markdown .rich-content ul { margin: 0 0 8px; }
+.rich-table .table-markdown .rich-content pre { margin: 0 0 8px; }
 .rich-table tbody tr:last-child td { border-bottom: 0; }
 .required-inputs-table { max-width: 720px; }
 .definition-list { display: grid; gap: 16px; margin: 0; }

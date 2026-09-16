@@ -68,7 +68,7 @@ function formattedContent(value) {
     list.items.push(match[2].trim());
   };
   const addTable = (headers, rows) => {
-    blocks.push('<div class="rich-table"><table><thead><tr>' + headers.map((cell) => "<th>" + inlineMarkdown(cell) + "</th>").join("") + "</tr></thead><tbody>" + rows.map((row) => "<tr>" + headers.map((_, cellIndex) => "<td>" + inlineMarkdown(row[cellIndex] || "") + "</td>").join("") + "</tr>").join("") + "</tbody></table></div>");
+    blocks.push('<div class="rich-table"><table><thead><tr>' + headers.map((cell) => "<th>" + tableCellMarkdown(cell) + "</th>").join("") + "</tr></thead><tbody>" + rows.map((row) => "<tr>" + headers.map((_, cellIndex) => "<td>" + tableCellMarkdown(row[cellIndex] || "") + "</td>").join("") + "</tr>").join("") + "</tbody></table></div>");
   };
   const cells = (line) => line.split("|").map((cell) => cell.trim()).filter(Boolean);
 
@@ -133,6 +133,10 @@ function formattedContent(value) {
   addParagraph();
   closeList();
   return '<div class="rich-content">' + blocks.join("") + "</div>";
+}
+
+function tableCellMarkdown(value) {
+  return '<div class="table-markdown">' + formattedContent(value) + "</div>";
 }
 
 function name(value) {
@@ -254,7 +258,7 @@ function requiredInputList(value) {
 function requiredInputsTable(value) {
   const inputs = requiredInputList(value);
   if (!inputs.length) return "<p>No required inputs provided.</p>";
-  return '<div class="rich-table required-inputs-table"><table><thead><tr><th>Required input</th></tr></thead><tbody>' + inputs.map((item) => "<tr><td>" + inlineMarkdown(item) + "</td></tr>").join("") + "</tbody></table></div>";
+  return '<div class="rich-table required-inputs-table"><table><thead><tr><th>Required input</th></tr></thead><tbody>' + inputs.map((item) => "<tr><td>" + tableCellMarkdown(item) + "</td></tr>").join("") + "</tbody></table></div>";
 }
 
 function workflowChoiceBlurb() {
@@ -409,7 +413,7 @@ function linkField(title, key, value, description) {
 function requiredInputsField(values) {
   const inputs = requiredInputList(values);
   const rows = (inputs.length ? inputs : [""]).map((item, index) => '<tr><td><input name="requiredInput" value="' + escapeHtml(item) + '" placeholder="Required input ' + (index + 1) + '"></td><td><button class="text-button remove-input-button" type="button"' + (inputs.length <= 1 ? " disabled" : "") + '>Remove</button></td></tr>').join("");
-  return '<fieldset class="form-field required-inputs-field"><legend>Required inputs</legend><small class="field-description">Files, links, context, or values Codex needs before the workflow runs. Add one required input per row.</small><div class="required-inputs-editor"><table><thead><tr><th>Required input</th><th><span class="sr-only">Row actions</span></th></tr></thead><tbody id="required-input-rows">' + rows + '</tbody></table><button id="add-required-input" class="button button-secondary button-small" type="button">Add required input</button></div></fieldset>';
+  return '<fieldset class="form-field required-inputs-field"><legend>Required inputs</legend><small class="field-description">Files, links, context, or values Codex needs before the workflow runs. Add one required input per row. Markdown renders in the published table, including headings, bold text, inline code, and links.</small><div class="required-inputs-editor"><table><thead><tr><th>Required input</th><th><span class="sr-only">Row actions</span></th></tr></thead><tbody id="required-input-rows">' + rows + '</tbody></table><button id="add-required-input" class="button button-secondary button-small" type="button">Add required input</button></div></fieldset>';
 }
 
 function promptTextField(value) {
