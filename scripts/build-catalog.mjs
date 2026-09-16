@@ -56,7 +56,7 @@ const records = promptFiles(promptsRoot)
     requiredInputs: requiredInputs(metadata.required_inputs, section(body, "Required inputs")),
     expectedOutput: metadata.expected_output,
     nextSteps: metadata.next_steps,
-    additionalInstructionsNotes: metadata.additional_instructions_notes || section(body, "Additional Instructions and Pre-Run Notes") || section(body, "Additional instructions and notes"),
+    additionalInstructionsNotes: metadata.additional_instructions_notes || section(body, "Additional Instructions and Post-Run Notes") || section(body, "Additional Instructions and Pre-Run Notes") || section(body, "Additional instructions and notes"),
     additionalNotesLink: metadata.additional_instructions_link || metadata.post_execution_link || "",
     skillName: metadata.skill_name || (generatedSkillPath ? skillSlug(metadata.title) : ""),
     skillDescription: metadata.skill_description || (generatedSkillPath ? String(metadata.description || "").replace(/\s+/g, " ").trim().slice(0, 300) : ""),

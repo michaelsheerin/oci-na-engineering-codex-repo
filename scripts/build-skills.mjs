@@ -73,7 +73,7 @@ ${fence}
 
 ${record.expectedOutput || "Return the result requested in the workflow instructions."}
 
-## Additional instructions and boundaries
+## Additional Instructions and Post-Run Notes
 
 ${record.additionalNotes || "No additional instructions were provided."}${linkedInstructions("Related instructions", record.additionalNotesLink)}
 `;
@@ -92,7 +92,7 @@ const records = promptFiles(promptsRoot).map(parsePrompt).filter((record) => rec
     requiredInputs: requiredInputs(metadata.required_inputs, section(body, "Required inputs")),
     promptText: cleanPromptText(section(body, "Prompt text")),
     expectedOutput: metadata.expected_output || section(body, "Expected output and next steps"),
-    additionalNotes: [metadata.additional_instructions_notes || section(body, "Additional Instructions and Pre-Run Notes") || section(body, "Additional instructions and notes"), metadata.post_execution_steps || section(body, "After the prompt runs")].filter(Boolean).join("\n\n"),
+    additionalNotes: [metadata.additional_instructions_notes || section(body, "Additional Instructions and Post-Run Notes") || section(body, "Additional Instructions and Pre-Run Notes") || section(body, "Additional instructions and notes"), metadata.post_execution_steps || section(body, "After the prompt runs")].filter(Boolean).join("\n\n"),
     additionalNotesLink: metadata.additional_instructions_link || metadata.post_execution_link || "",
   };
 });

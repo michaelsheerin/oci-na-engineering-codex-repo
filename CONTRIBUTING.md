@@ -24,8 +24,7 @@ Provide the details that help another RA understand and reuse the workflow. Titl
 | Prompt text | The complete reusable workflow, with placeholders for variable values. This is required. |
 | Required inputs | Each input a user needs before running the prompt. Write `None` when no input is required. |
 | Expected output | What Codex should produce and how to check it |
-| Additional instructions and notes | Extra constraints, references, edge cases, or setup details |
-| After the prompt runs | Follow-up work and an optional link to the next prompt, runbook, or documentation |
+| Additional Instructions and Post-Run Notes | Follow-up work, publishing steps, validation checks, edge cases, and an optional link to related instructions |
 | Contact | Your name and work email for questions or improvement requests |
 
 ## Content standards
