@@ -13,10 +13,9 @@ None provided.
 
 ## Required inputs
 
-### See Confluence for prerequisites
-
-1. Note: Windows does not require brew installation
-2. When authenticating - authenticate with ocna-saml (yubikey)
+- ### See Confluence for prerequisites
+- Note: Windows does not require brew installation
+- When authenticating - authenticate with ocna-saml (yubikey)
 
 ## Workflow instructions
 
@@ -78,7 +77,3 @@ oci session authenticate --tenancy-name "bmc_operator_access" --profile-name "bm
 7. Click the pencil icon to create a new task.
 8. Wait two full minutes on the blank task page.
 9. Send the Compute Admin request.
-
-## After completion
-
-No follow-up steps were provided.

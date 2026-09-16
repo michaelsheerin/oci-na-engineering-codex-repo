@@ -25,6 +25,13 @@ function cleanPromptText(value) {
     .trim();
 }
 
+function requiredInputs(value, fallback = "") {
+  if (Array.isArray(value)) return value.map((item) => String(item).trim()).filter(Boolean);
+  const source = String(value || fallback || "").trim();
+  if (!source) return [];
+  return source.split("\n").map((item) => item.replace(/^\s*(?:[-*+]\s+|\d+[.)]\s+)/, "").trim()).filter(Boolean);
+}
+
 function skillSlug(value) {
   return String(value || "prompt").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 64) || "prompt";
 }
@@ -46,10 +53,11 @@ const records = promptFiles(promptsRoot)
     description: metadata.description,
     category: metadata.category,
     tags: Array.isArray(metadata.tags) ? metadata.tags : [],
-    requiredInputs: typeof metadata.required_inputs === "string" ? metadata.required_inputs : Array.isArray(metadata.required_inputs) ? metadata.required_inputs.join("\n") : section(body, "Required inputs"),
+    requiredInputs: requiredInputs(metadata.required_inputs, section(body, "Required inputs")),
     expectedOutput: metadata.expected_output,
     nextSteps: metadata.next_steps,
-    additionalInstructionsNotes: metadata.additional_instructions_notes || section(body, "Additional instructions and notes"),
+    additionalInstructionsNotes: metadata.additional_instructions_notes || section(body, "Additional Instructions and Pre-Run Notes") || section(body, "Additional instructions and notes"),
+    additionalNotesLink: metadata.additional_instructions_link || metadata.post_execution_link || "",
     skillName: metadata.skill_name || (generatedSkillPath ? skillSlug(metadata.title) : ""),
     skillDescription: metadata.skill_description || (generatedSkillPath ? String(metadata.description || "").replace(/\s+/g, " ").trim().slice(0, 300) : ""),
     skillPath: generatedSkillPath,
@@ -61,7 +69,7 @@ const records = promptFiles(promptsRoot)
     contactEmail: metadata.contact_email,
     sourceIssue: metadata.source_issue || "",
     lastReviewed: metadata.last_reviewed,
-    useCase: section(body, "Use case and purpose"),
+    useCase: section(body, "Purpose and use case") || section(body, "Use case and purpose"),
     promptText: cleanPromptText(section(body, "Prompt text")),
     path: path.relative(repositoryRoot, filePath).replaceAll(path.sep, "/"),
     };

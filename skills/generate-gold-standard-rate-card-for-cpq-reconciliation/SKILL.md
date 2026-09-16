@@ -215,7 +215,3 @@ CPQ-Gold_to_SPA   Validation | Editable   comparison view. Includes SKU, Product
 
 1. Download SPA Rate Card and save it to a preferred location. This folder will be the target location for any AI-generated files, unless otherwise specified in the prompt.
 2. Navigate to and capture link of CPQ Quote where you are confident in the accuracy of the rate card.
-
-## After completion
-
-No follow-up steps were provided.

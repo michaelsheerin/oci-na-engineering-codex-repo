@@ -1,8 +1,8 @@
 # [Action-oriented prompt title]
 
-## Use case and purpose
+## Purpose and use case
 
-Describe when an RA should use this prompt, the problem it solves, the intended audience, and any constraints or review requirements.
+Describe the problem this workflow solves, the intended audience, and when Codex should select the paired skill.
 
 ## Codex skill
 
@@ -25,15 +25,11 @@ Prerequisite instructions: [Optional link to the prerequisite prompt, runbook, o
 
 State what Codex should return. Explain how to validate the result and what action should follow.
 
-## Additional instructions and notes
+## Additional Instructions and Pre-Run Notes
 
-Add any context, constraints, setup guidance, or usage notes that help someone use this prompt.
+Add context, constraints, pre-run setup, validation guidance, edge cases, follow-up work, or other notes that help someone use this workflow.
 
-## After the prompt runs
-
-List the required follow-up work, such as publishing a deliverable, sending a result, or running another prompt.
-
-Follow-up instructions: [Optional link to the next prompt, runbook, or documentation.]
+Related instructions: [Optional link to a prompt, runbook, or documentation.]
 
 ## Prompt text
 
@@ -67,14 +63,13 @@ required_inputs:
   - "[Input two, or None]"
 expected_output: "[What Codex should produce.]"
 next_steps: "[How the user should review or act on the output.]"
-additional_instructions_notes: "[Optional context, constraints, or usage guidance.]"
+additional_instructions_notes: "[Optional context, constraints, pre-run guidance, follow-up work, or usage guidance.]"
+additional_instructions_link: ""
 skill_name: "[lowercase-hyphenated-name]"
 skill_description: "[State exactly when Codex should use this workflow.]"
 skill_path: "skills/[lowercase-hyphenated-name]/SKILL.md"
 prerequisites: "[Prerequisite work, access, or None.]"
 prerequisite_link: ""
-post_execution_steps: "[Work required after Codex completes.]"
-post_execution_link: ""
 contact_name: "[Contributor name]"
 contact_email: "[work email]"
 last_reviewed: "YYYY-MM-DD"

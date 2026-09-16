@@ -32,7 +32,3 @@ test
 ## Additional instructions and boundaries
 
 test
-
-## After completion
-
-No follow-up steps were provided.

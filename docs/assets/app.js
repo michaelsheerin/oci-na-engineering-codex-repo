@@ -242,8 +242,23 @@ async function downloadSkill(record) {
 }
 
 function fullText(record) {
-  const requiredInputs = Array.isArray(record.requiredInputs) ? record.requiredInputs : [record.requiredInputs || ""];
-  return [record.title, record.description, record.category, ...(record.tags || []), record.skillName, record.skillDescription, record.useCase, record.prerequisites, record.promptText, ...requiredInputs, record.expectedOutput, record.nextSteps, record.additionalInstructionsNotes, record.postExecutionSteps, record.contactName, record.contactEmail].join(" ").toLowerCase();
+  const requiredInputs = requiredInputList(record.requiredInputs);
+  return [record.title, record.description, record.category, ...(record.tags || []), record.skillName, record.skillDescription, record.useCase, record.prerequisites, record.promptText, ...requiredInputs, record.expectedOutput, record.nextSteps, record.additionalInstructionsNotes, record.additionalNotesLink, record.postExecutionSteps, record.contactName, record.contactEmail].join(" ").toLowerCase();
+}
+
+function requiredInputList(value) {
+  const values = Array.isArray(value) ? value : String(value || "").split("\n");
+  return values.map((item) => cleanText(item).trim()).filter(Boolean);
+}
+
+function requiredInputsTable(value) {
+  const inputs = requiredInputList(value);
+  if (!inputs.length) return "<p>No required inputs provided.</p>";
+  return '<div class="rich-table required-inputs-table"><table><thead><tr><th>Required input</th></tr></thead><tbody>' + inputs.map((item) => "<tr><td>" + inlineMarkdown(item) + "</td></tr>").join("") + "</tbody></table></div>";
+}
+
+function workflowChoiceBlurb() {
+  return '<aside class="workflow-choice-blurb"><p class="eyebrow">Choose how to use a workflow</p><div><strong>Copy prompt text</strong><p>Use this for a one-time run in the current Codex task. It does not save the workflow.</p></div><div><strong>Download a Codex skill</strong><p>Use this when the workflow should stay available for future Codex tasks. Save <code>SKILL.md</code> under <code>~/.agents/skills/&lt;skill-name&gt;/</code>, then invoke <code>$skill-name</code>.</p></div></aside>';
 }
 
 function page(kicker, title, lead, content, markdownLead = false) {
@@ -298,7 +313,7 @@ function library() {
   const categoriesOptions = activeCategories.map((value) => '<option value="' + value + '">' + name(value) + '</option>').join("");
   const creators = [...new Set(prompts.map(creatorKey).filter(Boolean))].sort((left, right) => left.localeCompare(right));
   const creatorOptions = creators.map((value) => '<option value="' + escapeHtml(value) + '">' + escapeHtml(value) + '</option>').join("");
-  app.innerHTML = page("Prompt and skill catalog", "Browse the library", "Find a reusable workflow, then copy its prompt or download its Codex skill for continued use.", submissionNotice() + '<section class="library-section"><div class="container"><div class="section-heading"><div><p class="eyebrow">Search and filter</p><h2>Prompt and skill records</h2></div><p id="result-count" class="result-count"></p></div><p class="filter-description">Search includes titles, skill names and descriptions, categories, use cases, prerequisites, prompt text, expected output, follow-up steps, and creator details.</p><div class="filters"><label><span>Search</span><input id="search" type="search" placeholder="Search the prompt and skill library"></label><label><span>Category</span><select id="category"><option value="">All categories</option>' + categoriesOptions + '</select></label><label><span>Creator</span><select id="creator"><option value="">All creators</option>' + creatorOptions + '</select></label><label><span>Sort</span><select id="sort"><option value="title">Title, A to Z</option><option value="newest" selected>Newest first</option></select></label><button id="clear-filters" class="button button-secondary clear-filters">Clear filters</button></div><div class="table-wrap"><table class="prompt-table prompt-overview"><thead><tr><th>Workflow</th><th>Codex skill</th><th>Category</th><th>Creator</th><th>Updated</th><th><span class="sr-only">View details</span></th></tr></thead><tbody id="prompt-list"></tbody></table></div></div></section>');
+  app.innerHTML = page("Prompt and skill catalog", "Browse the library", "Find a reusable workflow, then copy its prompt or download its Codex skill for continued use.", submissionNotice() + '<section class="library-section"><div class="container"><div class="section-heading"><div><p class="eyebrow">Search and filter</p><h2>Prompt and skill records</h2></div><p id="result-count" class="result-count"></p></div>' + workflowChoiceBlurb() + '<p class="filter-description">Search includes titles, skill names and descriptions, categories, use cases, prerequisites, prompt text, expected output, additional instructions, and creator details.</p><div class="filters"><label><span>Search</span><input id="search" type="search" placeholder="Search the prompt and skill library"></label><label><span>Category</span><select id="category"><option value="">All categories</option>' + categoriesOptions + '</select></label><label><span>Creator</span><select id="creator"><option value="">All creators</option>' + creatorOptions + '</select></label><label><span>Sort</span><select id="sort"><option value="title">Title, A to Z</option><option value="newest" selected>Newest first</option></select></label><button id="clear-filters" class="button button-secondary clear-filters">Clear filters</button></div><div class="table-wrap"><table class="prompt-table prompt-overview"><thead><tr><th>Workflow</th><th>Codex skill</th><th>Category</th><th>Creator</th><th>Updated</th><th><span class="sr-only">View details</span></th></tr></thead><tbody id="prompt-list"></tbody></table></div></div></section>');
 
   const dismissNotice = document.querySelector("#dismiss-submission-notice");
   if (dismissNotice) dismissNotice.addEventListener("click", () => {
@@ -322,7 +337,7 @@ function library() {
       const contactName = cleanText(record.contactName).trim() || "Not provided";
       const contactEmail = cleanText(record.contactEmail).trim();
       const creatorCell = '<span class="creator-name">' + escapeHtml(contactName) + '</span>' + (contactEmail ? '<a class="creator-email" href="mailto:' + escapeHtml(contactEmail) + '">' + escapeHtml(contactEmail) + "</a>" : '<span class="creator-email">Not provided</span>');
-      const skillCell = record.skillPath ? '<code>$' + escapeHtml(record.skillName || skillSlug(record.title)) + '</code><small class="skill-status">Download available</small>' : '<span class="skill-status">Prompt only</span>';
+      const skillCell = record.skillPath ? '<code>$' + escapeHtml(record.skillName || skillSlug(record.title)) + '</code><a class="skill-download-link" href="' + escapeHtml(rawFileUrl(record.skillPath)) + '" download="' + escapeHtml((record.skillName || skillSlug(record.title)) + '-SKILL.md') + '">Download SKILL.md</a>' : '<span class="skill-status">Prompt only</span>';
       return '<tr><td><a class="prompt-title" href="' + href("prompt", { prompt: record.path }) + '">' + escapeHtml(record.title) + '</a></td><td class="skill-cell">' + skillCell + '</td><td class="category-cell">' + escapeHtml(name(record.category)) + '</td><td class="creator-cell">' + creatorCell + '</td><td class="updated-date">' + escapeHtml(displayDate(record.lastReviewed)) + '</td><td><a class="details-button" href="' + href("prompt", { prompt: record.path }) + '">View details</a></td></tr>';
     }).join("") : '<tr><td colspan="6"><div class="empty-state">No prompts or skills match the selected filters.</div></td></tr>';
   };
@@ -332,20 +347,21 @@ function library() {
 }
 
 function prompt(record) {
-  const requiredInputContent = Array.isArray(record.requiredInputs) ? record.requiredInputs.join("\n") : record.requiredInputs;
-  const inputs = formattedContent(requiredInputContent);
+  const inputs = requiredInputsTable(record.requiredInputs);
   const headerDescription = record.useCase || record.description || "Reusable prompt record.";
   const source = record.sourceIssue ? '<a href="' + escapeHtml(record.sourceIssue) + '" target="_blank" rel="noreferrer">Original form submission</a>' : "Not provided.";
   const markdownRecordUrl = repositoryUrl + "/blob/main/" + record.path.split("/").map(encodeURIComponent).join("/");
   const skillName = record.skillName || skillSlug(record.title);
   const skillAvailable = Boolean(record.skillPath);
-  const section = (heading, content) => "<section><h2>" + heading + "</h2>" + content + "</section>";
+  const section = (heading, description, content) => '<section><h2>' + heading + '</h2>' + (description ? '<p class="field-description record-field-description">' + description + "</p>" : "") + content + "</section>";
   const paragraph = (value) => formattedContent(value);
   const promptText = record.promptText || "";
   const promptSection = '<section><div class="prompt-heading"><div><h2>Copy prompt text</h2><p class="section-description">Copy this text when you want to run the workflow once in your current Codex chat. It does not save the workflow for later.</p></div><button id="copy-prompt" class="button button-secondary button-small" type="button"' + (promptText ? "" : " disabled") + '>Copy prompt</button></div><p id="copy-prompt-status" class="copy-prompt-status" aria-live="polite"></p><pre><code>' + escapeHtml(promptText || "No prompt text provided.") + "</code></pre></section>";
-  const skillSection = skillAvailable ? '<section class="skill-install"><div class="skill-install-heading"><div><p class="eyebrow">Codex skill</p><h2>Download and install this skill</h2><p>A skill keeps this workflow available across future Codex work. Download the file, then place it in your local Codex skills folder.</p></div><button id="download-skill" class="button" type="button">Download SKILL.md</button></div><dl class="definition-list"><div><dt>Skill name</dt><dd><code>$' + escapeHtml(skillName) + '</code></dd></div><div><dt>When Codex should use it</dt><dd>' + escapeHtml(record.skillDescription || headerDescription) + '</dd></div></dl><ol class="skill-install-steps"><li>Download <code>SKILL.md</code>.</li><li>Create <code>~/.agents/skills/' + escapeHtml(skillName) + '/</code> on your computer and save the downloaded file there as <code>SKILL.md</code>.</li><li>Restart Codex if the skill does not appear.</li><li>In a new Codex task, type <code>$' + escapeHtml(skillName) + '</code>, or make a request that matches the skill description.</li></ol><p id="download-skill-status" class="copy-prompt-status" aria-live="polite"></p></section>' : '<section class="skill-install skill-install-unavailable"><p class="eyebrow">Codex skill</p><h2>Skill download unavailable</h2><p>This legacy record has prompt text only. Its skill file has not been generated yet.</p></section>';
+  const skillSection = skillAvailable ? '<section class="skill-install"><div class="skill-install-heading"><div><p class="eyebrow">Codex skill</p><h2>Download and install this skill</h2><p>A skill keeps this workflow available across future Codex work. Download the file, then place it in your local Codex skills folder.</p></div><button id="download-skill" class="button" type="button">Download SKILL.md</button></div><dl class="definition-list"><div><dt>Skill name</dt><dd><code>$' + escapeHtml(skillName) + '</code></dd></div><div><dt>Purpose and use case</dt><dd>' + escapeHtml(record.skillDescription || headerDescription) + '</dd></div><div><dt>Prerequisites</dt><dd>' + formattedContent(record.prerequisites || "None provided.") + (record.prerequisiteLink ? '<p><a href="' + escapeHtml(record.prerequisiteLink) + '" target="_blank" rel="noreferrer">Open prerequisite instructions</a></p>' : "") + '</dd></div></dl><ol class="skill-install-steps"><li>Download <code>SKILL.md</code>.</li><li>Create <code>~/.agents/skills/' + escapeHtml(skillName) + '/</code> on your computer and save the downloaded file there as <code>SKILL.md</code>.</li><li>Restart Codex if the skill does not appear.</li><li>In a new Codex task, type <code>$' + escapeHtml(skillName) + '</code>, or make a request that matches the skill description.</li></ol><p id="download-skill-status" class="copy-prompt-status" aria-live="polite"></p></section>' : '<section class="skill-install skill-install-unavailable"><p class="eyebrow">Codex skill</p><h2>Skill download unavailable</h2><p>This legacy record has prompt text only. Its skill file has not been generated yet.</p></section>';
   const details = '<div class="detail-table"><table><tbody><tr><th>Category</th><td>' + name(record.category) + '</td></tr><tr><th>Last updated</th><td>' + escapeHtml(record.lastReviewed || "Not provided") + '</td></tr><tr><th>Markdown record</th><td><a href="' + escapeHtml(markdownRecordUrl) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.path) + "</code></a></td></tr>" + (skillAvailable ? '<tr><th>Skill file</th><td><a href="' + escapeHtml(repositoryUrl + "/blob/main/" + record.skillPath.split("/").map(encodeURIComponent).join("/")) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.skillPath) + "</code></a></td></tr>" : "") + "</tbody></table></div>";
-  app.innerHTML = page("Prompt and skill record", escapeHtml(record.title), headerDescription, '<section class="container record-layout"><div class="record-actions"><a class="button button-secondary" href="' + href("library") + '">Back to library</a><a class="button" href="' + publisherHref("edit", { prompt: record.path }) + '">Edit this workflow</a></div><article class="record-content">' + section("Use case and purpose", paragraph(record.useCase || record.description)) + section("Prerequisites", paragraph(record.prerequisites || "No prerequisites provided.") + (record.prerequisiteLink ? '<p><a href="' + escapeHtml(record.prerequisiteLink) + '" target="_blank" rel="noreferrer">Open prerequisite instructions</a></p>' : "")) + section("Required inputs", inputs) + section("Expected output", paragraph(record.expectedOutput)) + section("Additional instructions and notes", paragraph(record.additionalInstructionsNotes)) + section("After the prompt runs", paragraph(record.postExecutionSteps || record.nextSteps || "No follow-up steps provided.") + (record.postExecutionLink ? '<p><a href="' + escapeHtml(record.postExecutionLink) + '" target="_blank" rel="noreferrer">Open follow-up instructions</a></p>' : "")) + promptSection + skillSection + section("Contact", '<dl class="definition-list"><div><dt>Name</dt><dd>' + escapeHtml(record.contactName || "Not provided.") + "</dd></div><div><dt>Email</dt><dd>" + escapeHtml(record.contactEmail || "Not provided.") + "</dd></div></dl>") + section("Source", "<p>" + source + "</p>") + section("Record details", details) + "</article></section>", true);
+  const additionalNotes = [record.additionalInstructionsNotes, record.postExecutionSteps || record.nextSteps].filter(Boolean).join("\n\n");
+  const additionalLink = record.additionalNotesLink || record.postExecutionLink;
+  app.innerHTML = page("Prompt and skill record", escapeHtml(record.title), headerDescription, '<section class="container record-layout"><div class="record-actions"><a class="button button-secondary" href="' + href("library") + '">Back to library</a><a class="button" href="' + publisherHref("edit", { prompt: record.path }) + '">Edit this workflow</a></div><article class="record-content">' + workflowChoiceBlurb() + skillSection + section("Purpose and use case", "Explains the problem this workflow solves, its intended audience, and when Codex should select the paired skill.", paragraph(record.useCase || record.skillDescription || record.description)) + section("Prerequisites", "Work, access, setup, files, or decisions required before running this workflow.", paragraph(record.prerequisites || "No prerequisites provided.") + (record.prerequisiteLink ? '<p><a href="' + escapeHtml(record.prerequisiteLink) + '" target="_blank" rel="noreferrer">Open prerequisite instructions</a></p>' : "")) + section("Required inputs", "Files, links, context, or values needed before the workflow runs.", inputs) + section("Expected output", "The result Codex should produce and the checks that confirm a usable outcome.", paragraph(record.expectedOutput)) + promptSection + section("Additional Instructions and Pre-Run Notes", "Constraints, setup guidance, validation checks, edge cases, and follow-up work.", paragraph(additionalNotes || "No additional instructions provided.") + (additionalLink ? '<p><a href="' + escapeHtml(additionalLink) + '" target="_blank" rel="noreferrer">Open related instructions</a></p>' : "")) + section("Contact", "The person to contact with questions about this workflow.", '<dl class="definition-list"><div><dt>Name</dt><dd>' + escapeHtml(record.contactName || "Not provided.") + "</dd></div><div><dt>Email</dt><dd>" + escapeHtml(record.contactEmail || "Not provided.") + "</dd></div></dl>") + section("Source", "Supporting documentation or original submission context.", "<p>" + source + "</p>") + section("Record details", "Repository locations and publication information.", details) + "</article></section>", true);
   const copyButton = document.querySelector("#copy-prompt");
   const copyStatus = document.querySelector("#copy-prompt-status");
   if (copyButton && promptText) {
@@ -384,6 +400,18 @@ function input(label, key, value, rows, description, options = {}) {
   return '<label class="form-field" for="' + key + '"><span>' + label + (options.required ? ' <strong class="required-label">Required</strong>' : "") + "</span><small class=\"field-description\">" + escapeHtml(description) + "</small>" + control + "</label>";
 }
 
+function linkField(title, key, value, description) {
+  const visible = value ? "" : " hidden";
+  const expanded = value ? "true" : "false";
+  return '<div class="form-field link-field"><div class="field-title-row"><span>' + title + '</span><button class="text-button add-link-button" type="button" data-link-target="' + key + '" aria-expanded="' + expanded + '">Add a link</button></div><small class="field-description">' + escapeHtml(description) + '</small><div id="' + key + '-panel" class="link-input-panel"' + visible + '><input id="' + key + '" name="' + key + '" type="url" value="' + escapeHtml(value || "") + '" placeholder="https://..."><button class="text-button remove-link-button" type="button" data-link-target="' + key + '">Remove link</button></div></div>';
+}
+
+function requiredInputsField(values) {
+  const inputs = requiredInputList(values);
+  const rows = (inputs.length ? inputs : [""]).map((item, index) => '<tr><td><input name="requiredInput" value="' + escapeHtml(item) + '" placeholder="Required input ' + (index + 1) + '"></td><td><button class="text-button remove-input-button" type="button"' + (inputs.length <= 1 ? " disabled" : "") + '>Remove</button></td></tr>').join("");
+  return '<fieldset class="form-field required-inputs-field"><legend>Required inputs</legend><small class="field-description">Files, links, context, or values Codex needs before the workflow runs. Add one required input per row.</small><div class="required-inputs-editor"><table><thead><tr><th>Required input</th><th><span class="sr-only">Row actions</span></th></tr></thead><tbody id="required-input-rows">' + rows + '</tbody></table><button id="add-required-input" class="button button-secondary button-small" type="button">Add required input</button></div></fieldset>';
+}
+
 function promptTextField(value) {
   return '<fieldset class="form-field prompt-text-field"><legend>Skill instructions and prompt text <strong class="required-label">Required</strong></legend><small class="field-description">The complete workflow Codex should follow. It stays unchanged in the copyable prompt and becomes the instruction section of the generated <code>SKILL.md</code> file. Paste text or upload a plain-text or Markdown file.</small><div class="prompt-text-source" role="radiogroup" aria-label="Prompt text source"><label><input type="radio" name="promptTextSource" value="paste" checked> Paste text</label><label><input type="radio" name="promptTextSource" value="upload"> Upload file</label></div><div id="prompt-text-paste"><textarea id="promptText" name="promptText" rows="16" required>' + escapeHtml(value || "") + '</textarea></div><div id="prompt-text-upload" hidden><input id="promptTextFile" name="promptTextFile" type="file" accept=".txt,.md,.markdown,text/plain,text/markdown"><small class="file-help">Accepted file types: .txt, .md, or .markdown. Maximum size: 60 KB.</small></div></fieldset>';
 }
@@ -392,27 +420,26 @@ function form(record) {
   const editing = Boolean(record);
   const draft = editing ? null : readSubmissionDraft();
   const value = (key, fallback = "") => draft && Object.hasOwn(draft, key) ? draft[key] : fallback;
-  const existingRequiredInputs = Array.isArray(record?.requiredInputs) ? record.requiredInputs.join("\n") : record?.requiredInputs || "";
+  const existingRequiredInputs = record?.requiredInputs || [];
   const selectedCategory = value("category", record?.category || "");
   const categoryOptions = categories.map((category) => '<option value="' + category + '"' + (selectedCategory === category ? " selected" : "") + ">" + name(category) + "</option>").join("");
   const draftMessage = draft ? "Your previous entry was restored after sign-in. Review the fields, then select Publish workflow." : "";
   const skillName = value("skillName", record?.skillName || skillSlug(record?.title));
-  const skillDescription = value("skillDescription", record?.skillDescription || record?.description);
+  const skillDescription = value("skillDescription", record?.skillDescription || record?.useCase || record?.description);
+  const additionalNotes = value("additionalNotes", [record?.additionalInstructionsNotes, record?.postExecutionSteps || record?.nextSteps].filter(Boolean).join("\n\n"));
   const sharingStandard = '<article class="form-intro"><h2>' + (editing ? "Update process" : "Create a prompt and Codex skill") + '</h2><p>This submission creates two files: a readable Markdown workflow record for the library and a reusable <code>SKILL.md</code> file for Codex. The same workflow instructions power both outputs.</p><p>Fields marked Required create a valid Codex skill. The remaining fields make the workflow easier to prepare, validate, and continue after execution.</p><p>Remove customer data, credentials, personal data, internal identifiers, and non-public source material. Use placeholders for variable information.</p><div class="form-formatting-note"><strong>Formatting</strong><p>Long-form fields support Markdown headings, bullets, bold text, and links. Prompt text is preserved exactly for copying and is placed inside the generated skill file.</p></div><a class="text-link-dark" href="' + href("contribute") + '">Read the contribution guide</a></article>';
   const categoryField = '<label class="form-field" for="category"><span>Category</span><small class="field-description">The work area used to organize and filter this record.</small><select id="category" name="category"><option value="">Select a category</option>' + categoryOptions + "</select></label>";
   const fields = input("Title", "title", value("title", record?.title), 0, "A concise, action-oriented name for the workflow.", { required: true })
     + categoryField
     + input("Codex skill name", "skillName", skillName, 0, editing && record?.skillPath ? "This stable name is locked after publishing. Users type it after a dollar sign, for example $capacity-analysis." : "A stable lowercase name with hyphens. Users type this after a dollar sign, for example $capacity-analysis.", { required: true, pattern: "[a-z0-9]+(-[a-z0-9]+)*", readonly: editing && Boolean(record?.skillPath) })
-    + input("Codex skill description", "skillDescription", skillDescription, 3, "State exactly when Codex should select this workflow. Begin with the task or trigger, then name the intended result.", { required: true })
-    + input("Use case and purpose", "useCase", value("useCase", record?.useCase), 5, "Explain the problem this workflow solves, the intended audience, and any limits.")
+    + input("Skill purpose and use case", "skillDescription", skillDescription, 5, "Explain the problem this workflow solves, its intended audience, and when Codex should select the skill. Begin with the task or trigger, then name the intended result.", { required: true })
     + input("Prerequisites", "prerequisites", value("prerequisites", record?.prerequisites), 5, "Work, access, setup, files, or decisions required before running this workflow. Enter None when no prerequisite exists.")
-    + input("Prerequisite instructions link", "prerequisiteLink", value("prerequisiteLink", record?.prerequisiteLink), 0, "Optional link to the prompt, documentation, or runbook that explains the prerequisite.")
-    + input("Required inputs", "requiredInputs", value("requiredInputs", existingRequiredInputs), 5, "Files, links, context, or values Codex needs before the workflow runs.")
+    + linkField("Prerequisite instructions", "prerequisiteLink", value("prerequisiteLink", record?.prerequisiteLink), "Optional link to the prompt, documentation, or runbook that explains the prerequisite.")
+    + requiredInputsField(value("requiredInputs", existingRequiredInputs))
     + input("Expected output", "expectedOutput", value("expectedOutput", record?.expectedOutput), 5, "What Codex should produce and the checks that confirm a usable result.")
-    + input("Additional instructions and notes", "additionalNotes", value("additionalNotes", record?.additionalInstructionsNotes), 5, "Constraints, boundaries, setup details, validation checks, edge cases, or other context.")
     + promptTextField(value("promptText", record?.promptText))
-    + input("After the prompt runs", "postExecutionSteps", value("postExecutionSteps", record?.postExecutionSteps || record?.nextSteps), 5, "Follow-up work after Codex finishes, such as publishing a deck, sending a result, or running another workflow.")
-    + input("Follow-up instructions link", "postExecutionLink", value("postExecutionLink", record?.postExecutionLink), 0, "Optional link to the next prompt, documentation, or runbook.")
+    + input("Additional Instructions and Pre-Run Notes", "additionalNotes", additionalNotes, 5, "Constraints, pre-run setup, validation checks, edge cases, follow-up work, and any other context.")
+    + linkField("Related instructions", "additionalNotesLink", value("additionalNotesLink", record?.additionalNotesLink || record?.postExecutionLink), "Optional link to a related prompt, runbook, or documentation.")
     + input("Your name", "contactName", value("contactName", record?.contactName), 0, "The person to contact with questions about this record.")
     + input("Your work email", "contactEmail", value("contactEmail", record?.contactEmail), 0, "The work email for questions or feedback about this record.");
   app.innerHTML = page(editing ? "Workflow editor" : "Contribute", editing ? "Edit a prompt and skill" : "Submit a prompt and skill", editing ? "Update the Markdown record and its paired Codex skill together." : "Create a reader-friendly Markdown workflow record and a downloadable Codex skill from one form.", '<section class="container form-layout">' + sharingStandard + '<form id="prompt-form" class="prompt-form" data-path="' + escapeHtml(record?.path || "") + '" data-skill-path="' + escapeHtml(record?.skillPath || "") + '">' + fields + '<div class="form-actions"><button class="button" type="submit">' + (editing ? "Save workflow update" : "Publish prompt and skill") + '</button><a id="cancel-prompt-form" class="button button-secondary" href="' + (editing ? href("prompt", { prompt: record.path }) : href("library")) + '">Cancel</a></div><p id="submission-status" class="submission-status" aria-live="polite">' + escapeHtml(draftMessage) + "</p></form></section>");
@@ -432,15 +459,57 @@ function form(record) {
   };
   document.querySelectorAll('input[name="promptTextSource"]').forEach((option) => option.addEventListener("change", setPromptTextSource));
   setPromptTextSource();
+  const formElement = document.querySelector("#prompt-form");
+  const inputRows = document.querySelector("#required-input-rows");
+  const refreshInputRows = () => {
+    const rows = [...inputRows.querySelectorAll("tr")];
+    rows.forEach((row) => { row.querySelector(".remove-input-button").disabled = rows.length === 1; });
+  };
+  const addInputRow = (value = "") => {
+    const row = document.createElement("tr");
+    row.innerHTML = '<td><input name="requiredInput" value="' + escapeHtml(value) + '" placeholder="Required input ' + (inputRows.children.length + 1) + '"></td><td><button class="text-button remove-input-button" type="button">Remove</button></td>';
+    inputRows.append(row);
+    refreshInputRows();
+    row.querySelector("input").focus();
+  };
+  document.querySelector("#add-required-input").addEventListener("click", () => addInputRow());
+  inputRows.addEventListener("click", (event) => {
+    if (!event.target.matches(".remove-input-button")) return;
+    event.target.closest("tr").remove();
+    refreshInputRows();
+  });
+  refreshInputRows();
+  document.querySelectorAll(".add-link-button, .remove-link-button").forEach((button) => button.addEventListener("click", () => {
+    const key = button.dataset.linkTarget;
+    const panel = document.querySelector("#" + key + "-panel");
+    const addButton = document.querySelector('.add-link-button[data-link-target="' + key + '"]');
+    const isOpening = panel.hidden;
+    panel.hidden = !isOpening;
+    addButton.textContent = isOpening ? "Hide link" : "Add a link";
+    addButton.setAttribute("aria-expanded", String(isOpening));
+    if (button.matches(".remove-link-button")) {
+      document.querySelector("#" + key).value = "";
+      panel.hidden = true;
+      addButton.textContent = "Add a link";
+      addButton.setAttribute("aria-expanded", "false");
+    } else if (isOpening) {
+      document.querySelector("#" + key).focus();
+    }
+  }));
   if (titleInput && skillNameInput && !editing) {
     titleInput.addEventListener("input", () => {
       if (!skillNameInput.dataset.edited) skillNameInput.value = skillSlug(titleInput.value);
     });
     skillNameInput.addEventListener("input", () => { skillNameInput.dataset.edited = "true"; });
   }
-  document.querySelector("#prompt-form").addEventListener("submit", async (event) => {
+  formElement.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const data = Object.fromEntries(new FormData(event.currentTarget).entries());
+    const formData = new FormData(event.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+    data.requiredInputs = formData.getAll("requiredInput").map((value) => String(value).trim()).filter(Boolean);
+    data.useCase = data.skillDescription;
+    data.postExecutionSteps = "";
+    data.postExecutionLink = "";
     data.existingPath = event.currentTarget.dataset.path;
     data.existingSkillPath = event.currentTarget.dataset.skillPath;
     const status = document.querySelector("#submission-status");

@@ -33,6 +33,17 @@ function linkedInstructions(label, url) {
   return url ? `\n\n${label}: ${url}` : "";
 }
 
+function requiredInputs(value, fallback = "") {
+  if (Array.isArray(value)) return value.map((item) => String(item).trim()).filter(Boolean);
+  const source = String(value || fallback || "").trim();
+  if (!source) return [];
+  return source.split("\n").map((item) => item.replace(/^\s*(?:[-*+]\s+|\d+[.)]\s+)/, "").trim()).filter(Boolean);
+}
+
+function inputList(value) {
+  return value.length ? value.map((item) => `- ${item}`).join("\n") : "No required inputs were provided.";
+}
+
 function skillFile(record) {
   const fence = "`".repeat(Math.max(3, ...(record.promptText.match(/`+/g) || []).map((value) => value.length + 1)));
   return `---
@@ -50,7 +61,7 @@ ${record.prerequisites || "None provided."}${linkedInstructions("Prerequisite in
 
 ## Required inputs
 
-${record.requiredInputs || "No required inputs were provided."}
+${inputList(record.requiredInputs)}
 
 ## Workflow instructions
 
@@ -64,11 +75,7 @@ ${record.expectedOutput || "Return the result requested in the workflow instruct
 
 ## Additional instructions and boundaries
 
-${record.additionalNotes || "No additional instructions were provided."}
-
-## After completion
-
-${record.postExecutionSteps || "No follow-up steps were provided."}${linkedInstructions("Follow-up instructions", record.postExecutionLink)}
+${record.additionalNotes || "No additional instructions were provided."}${linkedInstructions("Related instructions", record.additionalNotesLink)}
 `;
 }
 
@@ -82,12 +89,11 @@ const records = promptFiles(promptsRoot).map(parsePrompt).filter((record) => rec
     skillDescription: oneLine(metadata.skill_description || metadata.description || useCase || title),
     prerequisites: metadata.prerequisites || section(body, "Prerequisites"),
     prerequisiteLink: metadata.prerequisite_link || "",
-    requiredInputs: typeof metadata.required_inputs === "string" ? metadata.required_inputs : section(body, "Required inputs"),
+    requiredInputs: requiredInputs(metadata.required_inputs, section(body, "Required inputs")),
     promptText: cleanPromptText(section(body, "Prompt text")),
     expectedOutput: metadata.expected_output || section(body, "Expected output and next steps"),
-    additionalNotes: metadata.additional_instructions_notes || section(body, "Additional instructions and notes"),
-    postExecutionSteps: metadata.post_execution_steps || section(body, "After the prompt runs"),
-    postExecutionLink: metadata.post_execution_link || "",
+    additionalNotes: [metadata.additional_instructions_notes || section(body, "Additional Instructions and Pre-Run Notes") || section(body, "Additional instructions and notes"), metadata.post_execution_steps || section(body, "After the prompt runs")].filter(Boolean).join("\n\n"),
+    additionalNotesLink: metadata.additional_instructions_link || metadata.post_execution_link || "",
   };
 });
 

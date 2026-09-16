@@ -290,7 +290,3 @@ Review the validation report and resolve inventory or authoritative-mapping erro
 ## Additional instructions and boundaries
 
 Requires Compute Admin MCP access and an authorized SharePoint Excel write capability. The prompt stops before writing files when authoritative mapping is unavailable and does not write a partial report.
-
-## After completion
-
-No follow-up steps were provided.

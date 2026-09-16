@@ -350,7 +350,3 @@ gold-standard-rate-card | Local   copy of the approved gold-standard data. Zero 
 2. Capture net new CPQ quote link that you are trying to reconcile the rate card for.
 3. Post the link and file location in the prompt Inputs fields.
 4. Once output is generated, sales team needs to manually reconcile CPQ with the provided discount and target net price as produced in the output Excel
-
-## After completion
-
-No follow-up steps were provided.
