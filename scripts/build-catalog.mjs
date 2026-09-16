@@ -25,10 +25,23 @@ function cleanPromptText(value) {
     .trim();
 }
 
+function skillSlug(value) {
+  return String(value || "prompt").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 64) || "prompt";
+}
+
+function skillPath(metadata) {
+  if (metadata.skill_path) return metadata.skill_path;
+  const name = skillSlug(metadata.skill_name || metadata.title);
+  const candidate = path.join(repositoryRoot, "skills", name, "SKILL.md");
+  return fs.existsSync(candidate) ? `skills/${name}/SKILL.md` : "";
+}
+
 const records = promptFiles(promptsRoot)
   .map(parsePrompt)
   .filter((record) => record.errors.length === 0)
-  .map(({ filePath, metadata, body }) => ({
+  .map(({ filePath, metadata, body }) => {
+    const generatedSkillPath = skillPath(metadata);
+    return {
     title: metadata.title,
     description: metadata.description,
     category: metadata.category,
@@ -37,6 +50,13 @@ const records = promptFiles(promptsRoot)
     expectedOutput: metadata.expected_output,
     nextSteps: metadata.next_steps,
     additionalInstructionsNotes: metadata.additional_instructions_notes || section(body, "Additional instructions and notes"),
+    skillName: metadata.skill_name || (generatedSkillPath ? skillSlug(metadata.title) : ""),
+    skillDescription: metadata.skill_description || (generatedSkillPath ? String(metadata.description || "").replace(/\s+/g, " ").trim().slice(0, 300) : ""),
+    skillPath: generatedSkillPath,
+    prerequisites: metadata.prerequisites || section(body, "Prerequisites"),
+    prerequisiteLink: metadata.prerequisite_link || "",
+    postExecutionSteps: metadata.post_execution_steps || section(body, "After the prompt runs"),
+    postExecutionLink: metadata.post_execution_link || "",
     contactName: metadata.contact_name,
     contactEmail: metadata.contact_email,
     sourceIssue: metadata.source_issue || "",
@@ -44,7 +64,8 @@ const records = promptFiles(promptsRoot)
     useCase: section(body, "Use case and purpose"),
     promptText: cleanPromptText(section(body, "Prompt text")),
     path: path.relative(repositoryRoot, filePath).replaceAll(path.sep, "/"),
-  }))
+    };
+  })
   .sort((a, b) => a.title.localeCompare(b.title));
 
 fs.writeFileSync(outputPath, `${JSON.stringify(records, null, 2)}\n`);

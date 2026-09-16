@@ -6,6 +6,7 @@ on:
     paths:
       - "docs/**"
       - "prompts/**"
+      - "skills/**"
       - "scripts/build-catalog.mjs"
       - "scripts/build-prompt-index.mjs"
       - "scripts/prompt-metadata.mjs"

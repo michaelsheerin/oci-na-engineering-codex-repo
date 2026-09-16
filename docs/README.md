@@ -1,9 +1,7 @@
-# Browse the Prompt Library
+# Browse the Prompt and Skill Library
 
-Open the live [Browse prompts page](https://michaelsheerin.github.io/oci-strategic-install-codex-repo/) for full-text search, category and demo filters, sorting, and direct prompt links.
+Open the live [Browse workflows page](https://michaelsheerin.github.io/oci-strategic-install-codex-repo/) for full-text search, category and creator filters, sorting, prompt copying, and `SKILL.md` downloads.
 
-GitHub-native browsing stays available through the [`prompts/`](../prompts) directory and GitHub code search.
+Each published workflow has two outputs: a reader-friendly Markdown record under [`prompts/`](../prompts) and a paired Codex skill under [`skills/`](../skills). Copy prompt text for one task. Download `SKILL.md` when you want the workflow available in future Codex tasks.
 
-## Catalog status
-
-The static catalog has no prompt records yet. Submit the first one through the [prompt submission form](https://github.com/michaelsheerin/oci-strategic-install-codex-repo/issues/new?template=prompt-submission.yml).
+Use [Submit a workflow](https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=submit) to publish both files together.

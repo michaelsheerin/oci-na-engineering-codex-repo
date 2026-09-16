@@ -17,13 +17,27 @@ function escapeCell(value) {
   return String(value || "Not provided.").replaceAll("|", "\\|").replaceAll("\n", " ");
 }
 
+function skillSlug(value) {
+  return String(value || "prompt").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 64) || "prompt";
+}
+
+function skillPath(record) {
+  if (record.skill_path) return record.skill_path;
+  const candidate = path.join(repositoryRoot, "skills", skillSlug(record.skill_name || record.title), "SKILL.md");
+  return fs.existsSync(candidate) ? `skills/${skillSlug(record.skill_name || record.title)}/SKILL.md` : "";
+}
+
 const records = promptFiles(promptsRoot)
   .map(parsePrompt)
   .filter((record) => record.errors.length === 0)
-  .map((record) => ({
-    ...record.metadata,
-    relativePath: path.relative(promptsRoot, record.filePath).replaceAll(path.sep, "/"),
-  }))
+  .map((record) => {
+    const metadata = record.metadata;
+    return {
+      ...metadata,
+      relativePath: path.relative(promptsRoot, record.filePath).replaceAll(path.sep, "/"),
+      skillPath: skillPath(metadata),
+    };
+  })
   .sort((a, b) => String(a.title).localeCompare(String(b.title)));
 
 const grouped = new Map();
@@ -37,18 +51,21 @@ const sections = [...grouped.entries()]
   .sort(([left], [right]) => left.localeCompare(right))
   .map(([category, categoryRecords]) => {
     const rows = categoryRecords
-      .map((record) => `| [${escapeCell(record.title)}](./${encodeURI(record.relativePath)}) | ${escapeCell(record.description)} | ${escapeCell(record.contact_name)} |`)
+      .map((record) => {
+        const skill = record.skillPath ? `[$${escapeCell(record.skill_name || skillSlug(record.title))}](../${encodeURI(record.skillPath)})` : "Prompt only";
+        return `| [${escapeCell(record.title)}](./${encodeURI(record.relativePath)}) | ${skill} | ${escapeCell(record.description)} | ${escapeCell(record.contact_name)} |`;
+      })
       .join("\n");
-    return `## ${displayCategory(category)}\n\n| Prompt | Use case | Contact |\n| --- | --- | --- |\n${rows}`;
+    return `## ${displayCategory(category)}\n\n| Workflow | Codex skill | Use case | Contact |\n| --- | --- | --- | --- |\n${rows}`;
   });
 
-const content = `# Prompt Library
+const content = `# Prompt and Skill Library
 
-Prompt form submissions appear here automatically. No review or manual publishing step is required.
+Each workflow form submission creates a readable prompt record and a paired Codex skill file. No review or manual publishing step is required.
 
-[Browse with search and filters](${browseUrl}) · [Submit a prompt](${submissionUrl}) · Use GitHub repository search with \`path:prompts\` to search prompt text, use cases, categories, or contacts.
+[Browse with search and filters](${browseUrl}) · [Submit a workflow](${submissionUrl}) · [Browse skill files](../skills/) · Use GitHub repository search with \`path:prompts\` or \`path:skills\` to find workflows.
 
-${records.length ? `This library contains ${records.length} prompt record${records.length === 1 ? "" : "s"}.` : "No prompt records have been added yet."}
+${records.length ? `This library contains ${records.length} workflow record${records.length === 1 ? "" : "s"}.` : "No workflow records have been added yet."}
 
 ${sections.join("\n\n")}
 `;

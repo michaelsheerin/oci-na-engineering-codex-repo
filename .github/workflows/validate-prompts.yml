@@ -4,7 +4,9 @@ on:
   pull_request:
     paths:
       - "prompts/**"
+      - "skills/**"
       - "scripts/validate-prompts.mjs"
+      - "scripts/validate-skills.mjs"
       - ".github/workflows/validate-prompts.yml"
 
 permissions:
@@ -22,3 +24,5 @@ jobs:
           node-version: 22
       - name: Validate prompt records
         run: node scripts/validate-prompts.mjs
+      - name: Validate Codex skill files
+        run: node scripts/validate-skills.mjs
