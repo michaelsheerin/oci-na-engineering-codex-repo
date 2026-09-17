@@ -280,8 +280,11 @@ function requiredInputsTemplate(value) {
   return "Inputs:\n\n" + inputs.map((input) => "- " + input + " = <customer-entry on execution>").join("\n");
 }
 
-function workflowChoiceBlurb() {
-  return '<aside class="workflow-choice-blurb"><h2>Choose how to use this workflow</h2><div class="workflow-option"><p class="workflow-option-label">Option 1</p><h3>Copy prompt text</h3><p>Use this for a one-time run in the current Codex task. It does not save the workflow.</p><p class="workflow-option-note">Select <strong>View details</strong> in the library to open and copy the prompt text.</p></div><div class="workflow-option"><p class="workflow-option-label">Option 2</p><h3>Download a Codex skill</h3><p>Use this when the workflow should stay available for future Codex tasks. Save <code>SKILL.md</code> under <code>~/.agents/skills/&lt;skill-name&gt;/</code>, then invoke <code>$skill-name</code>.</p><p class="workflow-option-note">Select <strong>View details</strong> to copy the required-input template, replace its placeholders, and paste it below the skill invocation.</p></div></aside>';
+function workflowChoiceBlurb(location) {
+  const isLibrary = location === "library";
+  const promptNote = isLibrary ? '<p class="workflow-option-note">Select <strong>View details</strong> in the library to open and copy the prompt text.</p>' : "";
+  const skillNote = isLibrary ? '<p class="workflow-option-note">Select <strong>View details</strong> to copy the required-input template, replace its placeholders, and paste it below the skill invocation.</p>' : '<p class="workflow-option-note">Use the Required inputs template on this page to prepare values for the skill invocation.</p>';
+  return '<aside class="workflow-choice-blurb"><h2>Choose how to use this workflow</h2><div class="workflow-option"><p class="workflow-option-label">Option 1</p><h3>Copy prompt text</h3><p>Use this for a one-time run in the current Codex task. It does not save the workflow.</p>' + promptNote + '</div><div class="workflow-option"><p class="workflow-option-label">Option 2</p><h3>Download a Codex skill</h3><p>Use this when the workflow should stay available for future Codex tasks. Save <code>SKILL.md</code> under <code>~/.agents/skills/&lt;skill-name&gt;/</code>, then invoke <code>$skill-name</code>.</p>' + skillNote + '</div></aside>';
 }
 
 function page(kicker, title, lead, content, markdownLead = false) {
@@ -336,7 +339,7 @@ function library() {
   const categoriesOptions = activeCategories.map((value) => '<option value="' + value + '">' + name(value) + '</option>').join("");
   const creators = [...new Set(prompts.map(creatorKey).filter(Boolean))].sort((left, right) => left.localeCompare(right));
   const creatorOptions = creators.map((value) => '<option value="' + escapeHtml(value) + '">' + escapeHtml(value) + '</option>').join("");
-  app.innerHTML = page("Prompt and skill catalog", "Browse the library", "Find a reusable workflow, then copy its prompt or download its Codex skill for continued use.", submissionNotice() + '<section class="library-section"><div class="container"><div class="section-heading"><div><p class="eyebrow">Search and filter</p><h2>Prompt and skill records</h2></div><p id="result-count" class="result-count"></p></div>' + workflowChoiceBlurb() + '<p class="filter-description">Search includes titles, skill names and descriptions, categories, use cases, prerequisites, prompt text, expected output, additional instructions, and creator details.</p><div class="filters"><label><span>Search</span><input id="search" type="search" placeholder="Search the prompt and skill library"></label><label><span>Category</span><select id="category"><option value="">All categories</option>' + categoriesOptions + '</select></label><label><span>Creator</span><select id="creator"><option value="">All creators</option>' + creatorOptions + '</select></label><label><span>Sort</span><select id="sort"><option value="title">Title, A to Z</option><option value="newest" selected>Newest first</option></select></label><button id="clear-filters" class="button button-secondary clear-filters">Clear filters</button></div><div class="table-wrap"><table class="prompt-table prompt-overview"><thead><tr><th>Workflow</th><th>Codex skill</th><th>Category</th><th>Creator</th><th>Updated</th><th><span class="sr-only">View details</span></th></tr></thead><tbody id="prompt-list"></tbody></table></div></div></section>');
+  app.innerHTML = page("Prompt and skill catalog", "Browse the library", "Find a reusable workflow, then copy its prompt or download its Codex skill for continued use.", submissionNotice() + '<section class="library-section"><div class="container"><div class="section-heading"><div><p class="eyebrow">Search and filter</p><h2>Prompt and skill records</h2></div><p id="result-count" class="result-count"></p></div>' + workflowChoiceBlurb("library") + '<p class="filter-description">Search includes titles, skill names and descriptions, categories, use cases, prerequisites, prompt text, expected output, additional instructions, and creator details.</p><div class="filters"><label><span>Search</span><input id="search" type="search" placeholder="Search the prompt and skill library"></label><label><span>Category</span><select id="category"><option value="">All categories</option>' + categoriesOptions + '</select></label><label><span>Creator</span><select id="creator"><option value="">All creators</option>' + creatorOptions + '</select></label><label><span>Sort</span><select id="sort"><option value="title">Title, A to Z</option><option value="newest" selected>Newest first</option></select></label><button id="clear-filters" class="button button-secondary clear-filters">Clear filters</button></div><div class="table-wrap"><table class="prompt-table prompt-overview"><thead><tr><th>Workflow</th><th>Codex skill</th><th>Category</th><th>Creator</th><th>Updated</th><th><span class="sr-only">View details</span></th></tr></thead><tbody id="prompt-list"></tbody></table></div></div></section>');
 
   const dismissNotice = document.querySelector("#dismiss-submission-notice");
   if (dismissNotice) dismissNotice.addEventListener("click", () => {
@@ -360,9 +363,26 @@ function library() {
       const contactName = cleanText(record.contactName).trim() || "Not provided";
       const contactEmail = cleanText(record.contactEmail).trim();
       const creatorCell = '<span class="creator-name">' + escapeHtml(contactName) + '</span>' + (contactEmail ? '<a class="creator-email" href="mailto:' + escapeHtml(contactEmail) + '">' + escapeHtml(contactEmail) + "</a>" : '<span class="creator-email">Not provided</span>');
-      const skillCell = record.skillPath ? '<code>$' + escapeHtml(record.skillName || skillSlug(record.title)) + '</code><a class="skill-download-link" href="' + escapeHtml(rawFileUrl(record.skillPath)) + '" download="' + escapeHtml((record.skillName || skillSlug(record.title)) + '-SKILL.md') + '">Download SKILL.md</a>' : '<span class="skill-status">Prompt only</span>';
+      const skillName = record.skillName || skillSlug(record.title);
+      const skillCell = record.skillPath ? '<code>$' + escapeHtml(skillName) + '</code><button class="text-button skill-download-link" type="button" data-skill-path="' + escapeHtml(record.skillPath) + '" data-skill-name="' + escapeHtml(skillName) + '">Download SKILL.md</button>' : '<span class="skill-status">Prompt only</span>';
       return '<tr><td><a class="prompt-title" href="' + href("prompt", { prompt: record.path }) + '">' + escapeHtml(record.title) + '</a></td><td class="skill-cell">' + skillCell + '</td><td class="category-cell">' + escapeHtml(name(record.category)) + '</td><td class="creator-cell">' + creatorCell + '</td><td class="updated-date">' + escapeHtml(displayDate(record.lastReviewed)) + '</td><td><a class="details-button" href="' + href("prompt", { prompt: record.path }) + '">View details</a></td></tr>';
     }).join("") : '<tr><td colspan="6"><div class="empty-state">No prompts or skills match the selected filters.</div></td></tr>';
+    list.querySelectorAll(".skill-download-link").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const initialLabel = button.textContent;
+        button.disabled = true;
+        try {
+          await downloadSkill({ skillPath: button.dataset.skillPath, skillName: button.dataset.skillName });
+          button.textContent = "Downloaded";
+        } catch {
+          button.textContent = "Download failed";
+        }
+        window.setTimeout(() => {
+          button.textContent = initialLabel;
+          button.disabled = false;
+        }, 1800);
+      });
+    });
   };
   [search, category, creator, sort].forEach((element) => element.addEventListener(element === search ? "input" : "change", update));
   document.querySelector("#clear-filters").addEventListener("click", () => { search.value = ""; category.value = ""; creator.value = ""; sort.value = "newest"; update(); });
@@ -399,7 +419,7 @@ function prompt(record) {
     + section("Contact", "The person to contact with questions about this workflow.", '<dl class="definition-list"><div><dt>Name</dt><dd>' + escapeHtml(record.contactName || "Not provided.") + "</dd></div><div><dt>Email</dt><dd>" + escapeHtml(record.contactEmail || "Not provided.") + "</dd></div></dl>")
     + section("Source", "Supporting documentation or original submission context.", "<p>" + source + "</p>")
     + section("Record details", "Repository locations and publication information.", details);
-  app.innerHTML = page("Prompt and skill record", escapeHtml(record.title), headerDescription, '<section class="container record-layout"><div class="record-actions"><a class="button button-secondary" href="' + href("library") + '">Back to library</a><a class="button" href="' + publisherHref("edit", { prompt: record.path }) + '">Edit this workflow</a></div><article class="record-content">' + workflowChoiceBlurb() + recordSections + "</article></section>", true);
+  app.innerHTML = page("Prompt and skill record", escapeHtml(record.title), headerDescription, '<section class="container record-layout"><div class="record-actions"><a class="button button-secondary" href="' + href("library") + '">Back to library</a><a class="button" href="' + publisherHref("edit", { prompt: record.path }) + '">Edit this workflow</a></div><article class="record-content">' + workflowChoiceBlurb("detail") + recordSections + "</article></section>", true);
   const copyButton = document.querySelector("#copy-prompt");
   const copyStatus = document.querySelector("#copy-prompt-status");
   if (copyButton && promptText) {

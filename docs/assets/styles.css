@@ -264,6 +264,7 @@ input:focus, select:focus { outline: 3px solid rgba(189, 44, 44, .18); border-co
 .section-description { max-width: 630px; margin: 7px 0 0; font-size: .92rem; }
 .copy-prompt-status { min-height: 1.25rem; margin: 0 0 10px; font-size: .88rem; }
 .skill-install { margin: 30px 0; padding: 40px 46px; border: 1px solid #d9c5c5; border-radius: 7px; background: #fffafa; }
+.record-content > section.skill-install { padding: 48px 60px; }
 .skill-install-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 30px; }
 .skill-install-heading .eyebrow { margin-bottom: 7px; }
 .skill-install-heading h2 { margin: 0 0 9px; }
@@ -364,7 +365,7 @@ textarea:focus { outline: 3px solid rgba(189, 44, 44, .18); border-color: var(--
   .record-actions, .form-actions { align-items: stretch; flex-direction: column; }
   .prompt-heading { align-items: flex-start; flex-direction: column; }
   .skill-install-heading { align-items: stretch; flex-direction: column; }
-  .skill-install { padding: 30px 24px; }
+  .record-content > section.skill-install { padding: 34px 30px; }
   .workflow-choice-blurb { grid-template-columns: 1fr; gap: 16px; }
   .workflow-option { padding-left: 0; border-left: 0; }
   .prompt-overview thead { display: none; }
