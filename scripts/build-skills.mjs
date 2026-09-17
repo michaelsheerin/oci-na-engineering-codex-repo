@@ -57,7 +57,7 @@ description: ${JSON.stringify(record.skillDescription)}
 
 # ${record.title}
 
-Use this skill when the user's request matches the skill description. Follow the user's direct instructions when they conflict with this workflow.
+Use this skill when the user's request matches the skill description. Follow the user's direct instructions when they conflict with this workflow. Before running the workflow, confirm that every Required input has a value. If a value is missing, ask the user for it before continuing. Users may provide values as \`- Input name = value\`.
 
 ## Prerequisites
 
