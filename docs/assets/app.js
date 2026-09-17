@@ -180,10 +180,10 @@ function publishedRecordPath(value) {
 function submissionNotice() {
   const query = new URLSearchParams(window.location.search);
   const status = query.get("submission");
-  if (status !== "created" && status !== "updated") return "";
+  if (status !== "created" && status !== "updated" && status !== "deleted") return "";
   const path = publishedRecordPath(query.get("record"));
-  const recordLink = path ? '<a class="submission-notice-link" href="' + escapeHtml(repositoryUrl + "/blob/main/" + path.split("/").map(encodeURIComponent).join("/")) + '" target="_blank" rel="noreferrer">View Markdown record</a>' : "";
-  const action = status === "created" ? "saved" : "updated";
+  const recordLink = path && status !== "deleted" ? '<a class="submission-notice-link" href="' + escapeHtml(repositoryUrl + "/blob/main/" + path.split("/").map(encodeURIComponent).join("/")) + '" target="_blank" rel="noreferrer">View Markdown record</a>' : "";
+  const action = status === "created" ? "saved" : status === "deleted" ? "deleted" : "updated";
   return '<section id="submission-notice" class="container submission-notice" role="status" aria-live="polite"><div class="submission-notice-copy"><strong>Prompt record ' + action + '.</strong><span>This temporary confirmation will disappear when you close it. The catalog is rebuilding and this library will update automatically after deployment.</span></div>' + recordLink + '<button id="dismiss-submission-notice" class="submission-notice-dismiss" type="button" aria-label="Dismiss status update" title="Dismiss status update">&times;</button></section>';
 }
 
@@ -192,6 +192,12 @@ function libraryRedirect(result) {
   redirect.searchParams.set("submission", result.updated ? "updated" : "created");
   const path = publishedRecordPath(result.path);
   if (path) redirect.searchParams.set("record", path);
+  return redirect.toString();
+}
+
+function deletionRedirect() {
+  const redirect = new URL(publicLibraryUrl);
+  redirect.searchParams.set("submission", "deleted");
   return redirect.toString();
 }
 
@@ -323,6 +329,8 @@ function contributionGuide() {
   const templateLink = repositoryUrl + "/blob/main/prompts/_template.md";
   const skillsLink = repositoryUrl + "/tree/main/skills";
   app.innerHTML = page("Contribution guide", "Share a reusable Codex workflow", "One submission creates a readable Markdown record for people and a SKILL.md file for Codex.", '<section class="container guide-layout"><section class="guide-introduction"><div><p class="eyebrow">Preferred path</p><h2>Publish through the workflow form</h2><p>Complete the form, sign in with GitHub, and publish both artifacts together. The library refreshes after deployment.</p><div class="guide-actions"><a class="button" href="' + submitLink + '">Submit a prompt and skill</a><a class="button button-secondary" href="' + href("library") + '">Browse the library</a></div></div><aside class="guide-note"><h3>Before you submit</h3><p>Remove customer data, credentials, personal data, internal identifiers, and non-public source material. Replace variable data with placeholders.</p></aside></section><section class="guide-section"><p class="eyebrow">Required for a Codex skill</p><h2>What the form produces</h2><div class="guide-table"><table><thead><tr><th>Field</th><th>Purpose</th></tr></thead><tbody><tr><td>Title</td><td>Names the reader-friendly Markdown workflow record.</td></tr><tr><td>Codex skill name</td><td>A stable lowercase, hyphen-separated name, invoked as <code>$skill-name</code>.</td></tr><tr><td>Codex skill description</td><td>Tells Codex when the workflow applies.</td></tr><tr><td>Skill instructions and prompt text</td><td>Provides the full reusable workflow. Users may copy it for a one-time run or install it as a skill.</td></tr></tbody></table></div></section><section class="guide-info-grid"><article class="guide-section"><p class="eyebrow">Context for continued use</p><h2>Make the workflow operational</h2><ul class="guide-checklist"><li>List prerequisites and link to their instructions when they exist.</li><li>State required inputs, expected output, constraints, and validation checks.</li><li>List the post-execution work and link to the next prompt or runbook.</li><li>Use Markdown headings, bullets, bold text, and links in long-form fields.</li></ul></article><article class="guide-section guide-restricted"><p class="eyebrow">Using a downloaded skill</p><h2>Keep it available in Codex</h2><ol class="guide-checklist"><li>Download <code>SKILL.md</code> from a library record.</li><li>Save it as <code>~/.agents/skills/&lt;skill-name&gt;/SKILL.md</code>.</li><li>Restart Codex if needed.</li><li>Start a new task and type <code>$&lt;skill-name&gt;</code>.</li></ol></article></section><section class="guide-direct"><div><p class="eyebrow">Repository source</p><h2>Review the generated files</h2><p>Each workflow has a Markdown record under <code>prompts/</code> and a paired skill file under <code>skills/</code>.</p></div><div class="guide-actions"><a class="button button-secondary" href="' + templateLink + '" target="_blank" rel="noreferrer">Open record template</a><a class="text-link-dark" href="' + skillsLink + '" target="_blank" rel="noreferrer">Browse skill files</a></div></section></section>');
+  const skillInstallSteps = app.querySelector(".guide-restricted .guide-checklist");
+  if (skillInstallSteps) skillInstallSteps.innerHTML = '<li>Create the user-level <code>~/.agents/skills/</code> folder once.</li><li>Create a <code>&lt;skill-name&gt;</code> subfolder and save the downloaded file there as <code>SKILL.md</code>.</li><li>Start a new Codex task and type <code>$&lt;skill-name&gt;</code>.</li>';
 }
 
 function about() {
@@ -405,7 +413,8 @@ function prompt(record) {
   const requiredInputsSection = '<section><div class="prompt-heading"><div><h2>Required inputs</h2><p class="field-description record-field-description">Files, links, context, or values needed before the workflow runs. The copyable template leaves a blank value after each equals sign for use with a downloaded skill.</p></div><button id="copy-inputs" class="button button-secondary button-small" type="button"' + (inputsTemplate ? "" : " disabled") + '>Copy input text</button></div><p id="copy-inputs-status" class="copy-prompt-status" aria-live="polite"></p>' + inputs + "</section>";
   const prerequisiteLink = record.prerequisiteLink ? '<p><a href="' + escapeHtml(record.prerequisiteLink) + '" target="_blank" rel="noreferrer">Open prerequisite link</a></p>' : "";
   const skillDetails = '<dl class="definition-list"><div><dt>Skill name</dt><dd><code>$' + escapeHtml(skillName) + '</code></dd></div><div><dt>Purpose and use case</dt><dd>' + escapeHtml(record.skillDescription || headerDescription) + "</dd></div></dl>";
-  const skillSection = skillAvailable ? '<section class="skill-install"><div class="skill-install-heading"><div><p class="eyebrow">Codex skill</p><h2>Download and install this skill</h2><p>A skill keeps this workflow available across future Codex work. Download the file, then place it in your local Codex skills folder.</p></div><button id="download-skill" class="button" type="button">Download SKILL.md</button></div>' + skillDetails + '<div class="skill-prerequisites">' + prerequisites + prerequisiteLink + '</div><ol class="skill-install-steps"><li>Download <code>SKILL.md</code>.</li><li>Create <code>~/.agents/skills/' + escapeHtml(skillName) + '/</code> on your computer and save the downloaded file there as <code>SKILL.md</code>.</li><li>Restart Codex if the skill does not appear.</li><li>In a new Codex task, type <code>$' + escapeHtml(skillName) + '</code>, or make a request that matches the skill description.</li><li>Copy the Required inputs template below, enter a value after each equals sign, and paste the completed list below the skill invocation.</li></ol><p id="download-skill-status" class="copy-prompt-status" aria-live="polite"></p></section>' : '<section class="skill-install skill-install-unavailable"><p class="eyebrow">Codex skill</p><h2>Skill download unavailable</h2><p>This legacy record has prompt text only. Its skill file has not been generated yet.</p></section>';
+  const skillFolderPrerequisite = '<p class="skill-folder-prerequisite"><strong>Prerequisite:</strong> Create a local skills folder once before installing your first skill. Replace <code>&lt;username&gt;</code> with your account folder name under <code>C:\\Users</code> on Windows, or your macOS home-folder name. Windows: <code>C:\\Users\\&lt;username&gt;\\.agents\\skills\\</code> Mac: <code>/Users/&lt;username&gt;/.agents/skills/</code></p>';
+  const skillSection = skillAvailable ? '<section class="skill-install"><div class="skill-install-heading"><div><p class="eyebrow">Codex skill</p><h2>Download and install this skill</h2><p>A skill keeps this workflow available across future Codex work. Download the file, then place it in your local Codex skills folder.</p></div><button id="download-skill" class="button" type="button">Download SKILL.md</button></div>' + skillDetails + '<div class="skill-prerequisites">' + prerequisites + prerequisiteLink + '</div>' + skillFolderPrerequisite + '<ol class="skill-install-steps"><li>Inside the skills folder above, create a subfolder named <code>' + escapeHtml(skillName) + '</code>.</li><li>Download <code>SKILL.md</code> and save it inside that subfolder as <code>SKILL.md</code>.</li><li>Open a new Codex task and type <code>$' + escapeHtml(skillName) + '</code>.</li><li>Copy the Required inputs template below. Enter values for your specific customer or use case after each equals sign, paste the completed inputs below <code>$' + escapeHtml(skillName) + '</code>, and ask Codex to execute the skill.</li></ol><p id="download-skill-status" class="copy-prompt-status" aria-live="polite"></p></section>' : '<section class="skill-install skill-install-unavailable"><p class="eyebrow">Codex skill</p><h2>Skill download unavailable</h2><p>This legacy record has prompt text only. Its skill file has not been generated yet.</p></section>';
   const details = '<div class="detail-table"><table><tbody><tr><th>Category</th><td>' + name(record.category) + '</td></tr><tr><th>Last updated</th><td>' + escapeHtml(record.lastReviewed || "Not provided") + '</td></tr><tr><th>Markdown record</th><td><a href="' + escapeHtml(markdownRecordUrl) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.path) + "</code></a></td></tr>" + (skillAvailable ? '<tr><th>Skill file</th><td><a href="' + escapeHtml(repositoryUrl + "/blob/main/" + record.skillPath.split("/").map(encodeURIComponent).join("/")) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.skillPath) + "</code></a></td></tr>" : "") + "</tbody></table></div>";
   const additionalNotes = [record.additionalInstructionsNotes, record.postExecutionSteps || record.nextSteps].filter(Boolean).join("\n\n");
   const additionalLink = record.additionalNotesLink || record.postExecutionLink;
@@ -455,7 +464,7 @@ function prompt(record) {
       try {
         await downloadSkill(record);
         downloadButton.textContent = "Downloaded";
-        downloadStatus.textContent = "Save the downloaded file as ~/.agents/skills/" + skillName + "/SKILL.md, then restart Codex if needed.";
+        downloadStatus.textContent = "Save the downloaded file as ~/.agents/skills/" + skillName + "/SKILL.md, then open a new Codex task and type $" + skillName + ".";
         window.setTimeout(() => { downloadButton.textContent = "Download SKILL.md"; }, 1800);
       } catch (error) {
         downloadStatus.textContent = error.message || "Download failed. Open the skill file from Record details instead.";
@@ -524,7 +533,8 @@ function form(record) {
     + promptTextField(value("promptText", record?.promptText))
     + input("Your name", "contactName", value("contactName", record?.contactName), 0, "The person to contact with questions about this record.")
     + input("Your work email", "contactEmail", value("contactEmail", record?.contactEmail), 0, "The work email for questions or feedback about this record.");
-  app.innerHTML = page(editing ? "Workflow editor" : "Contribute", editing ? "Edit a prompt and skill" : "Submit a prompt and skill", editing ? "Update the Markdown record and its paired Codex skill together." : "Create a reader-friendly Markdown workflow record and a downloadable Codex skill from one form.", '<section class="container form-layout">' + sharingStandard + '<form id="prompt-form" class="prompt-form" data-path="' + escapeHtml(record?.path || "") + '" data-skill-path="' + escapeHtml(record?.skillPath || "") + '">' + fields + '<div class="form-actions"><button class="button" type="submit">' + (editing ? "Save workflow update" : "Publish prompt and skill") + '</button><a id="cancel-prompt-form" class="button button-secondary" href="' + (editing ? href("prompt", { prompt: record.path }) : href("library")) + '">Cancel</a></div><p id="submission-status" class="submission-status" aria-live="polite">' + escapeHtml(draftMessage) + "</p></form></section>");
+  const deleteAction = editing ? '<button id="delete-prompt" class="button button-danger" type="button">Delete prompt</button>' : "";
+  app.innerHTML = page(editing ? "Workflow editor" : "Contribute", editing ? "Edit a prompt and skill" : "Submit a prompt and skill", editing ? "Update the Markdown record and its paired Codex skill together." : "Create a reader-friendly Markdown workflow record and a downloadable Codex skill from one form.", '<section class="container form-layout">' + sharingStandard + '<form id="prompt-form" class="prompt-form" data-path="' + escapeHtml(record?.path || "") + '" data-skill-path="' + escapeHtml(record?.skillPath || "") + '">' + fields + '<div class="form-actions"><button class="button" type="submit">' + (editing ? "Save workflow update" : "Publish prompt and skill") + '</button>' + deleteAction + '<a id="cancel-prompt-form" class="button button-secondary" href="' + (editing ? href("prompt", { prompt: record.path }) : href("library")) + '">Cancel</a></div><p id="submission-status" class="submission-status" aria-live="polite">' + escapeHtml(draftMessage) + "</p></form></section>");
   if (draft) document.querySelector("#cancel-prompt-form").addEventListener("click", clearSubmissionDraft);
   const promptTextPaste = document.querySelector("#prompt-text-paste");
   const promptTextUpload = document.querySelector("#prompt-text-upload");
@@ -542,6 +552,30 @@ function form(record) {
   document.querySelectorAll('input[name="promptTextSource"]').forEach((option) => option.addEventListener("change", setPromptTextSource));
   setPromptTextSource();
   const formElement = document.querySelector("#prompt-form");
+  const deleteButton = document.querySelector("#delete-prompt");
+  if (deleteButton) deleteButton.addEventListener("click", async () => {
+    if (!window.confirm('Delete "' + (record?.title || "this prompt") + '"? This permanently removes the Markdown record and its paired SKILL.md file from the repository.')) return;
+    const status = document.querySelector("#submission-status");
+    const saveButton = formElement.querySelector("button[type=submit]");
+    deleteButton.disabled = true;
+    saveButton.disabled = true;
+    status.textContent = "Deleting the prompt record and Codex skill...";
+    try {
+      const response = await fetch("/api/prompt-submissions", { method: "DELETE", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ path: formElement.dataset.path, skillPath: formElement.dataset.skillPath }) });
+      const result = await response.json().catch(() => ({}));
+      if (response.status === 401) {
+        const returnTo = window.location.pathname + window.location.search;
+        window.location.assign("/auth/login?return_to=" + encodeURIComponent(returnTo));
+        return;
+      }
+      if (!response.ok) throw new Error(result.error || "The prompt was not deleted.");
+      window.location.assign(deletionRedirect());
+    } catch (error) {
+      status.textContent = error.message || "The prompt was not deleted. Try again.";
+      deleteButton.disabled = false;
+      saveButton.disabled = false;
+    }
+  });
   const configureListEditor = (rowsId, addButtonId, inputName, itemLabel) => {
     const rowsContainer = document.querySelector("#" + rowsId);
     const refreshRows = () => {

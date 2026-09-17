@@ -48,6 +48,8 @@ h2 { margin-bottom: 12px; font-size: clamp(1.45rem, 2.2vw, 2rem); line-height: 1
 .button:hover { border-color: var(--accent-dark); background: var(--accent-dark); }
 .button-secondary { min-height: 36px; border-color: var(--line); background: var(--white); color: var(--ink); font-size: 0.9rem; }
 .button-secondary:hover { border-color: var(--accent); background: var(--white); color: var(--accent); }
+.button-danger { border-color: #a32020; background: #a32020; }
+.button-danger:hover { border-color: #7e1717; background: #7e1717; }
 .text-link { color: var(--white); font-weight: 700; text-underline-offset: 4px; }
 
 .purpose-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; padding: 78px 0; }
@@ -272,6 +274,8 @@ input:focus, select:focus { outline: 3px solid rgba(189, 44, 44, .18); border-co
 .skill-install .definition-list { margin: 23px 0; }
 .skill-install .definition-list dd .rich-content { margin: 0; }
 .skill-install .definition-list dd .rich-content p { margin-bottom: 8px; }
+.skill-folder-prerequisite { margin: 0 0 22px; padding: 16px 18px; border-left: 3px solid var(--accent); border-radius: 4px; background: rgba(255, 255, 255, .6); }
+.skill-folder-prerequisite strong { color: var(--ink); }
 .skill-prerequisites .rich-table { max-width: none; margin: 18px 0 12px; }
 .skill-prerequisites > p { margin: 0 0 22px; }
 .skill-install code { padding: 2px 5px; border-radius: 3px; background: #f1e8e8; color: var(--ink); font-size: .9em; }
