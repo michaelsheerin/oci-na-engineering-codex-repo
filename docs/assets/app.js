@@ -274,8 +274,14 @@ function prerequisitesTable(value) {
   return workflowItemsTable(value, "Prerequisite", "No prerequisites provided.", "prerequisites-table");
 }
 
+function requiredInputsTemplate(value) {
+  const inputs = workflowItemList(value);
+  if (!inputs.length) return "";
+  return "Inputs:\n\n" + inputs.map((input) => "- " + input + " = <customer-entry on execution>").join("\n");
+}
+
 function workflowChoiceBlurb() {
-  return '<aside class="workflow-choice-blurb"><h2>Choose how to use this workflow</h2><div class="workflow-option"><p class="workflow-option-label">Option 1</p><h3>Copy prompt text</h3><p>Use this for a one-time run in the current Codex task. It does not save the workflow.</p><p class="workflow-option-note">Select <strong>View details</strong> in the library to open and copy the prompt text.</p></div><div class="workflow-option"><p class="workflow-option-label">Option 2</p><h3>Download a Codex skill</h3><p>Use this when the workflow should stay available for future Codex tasks. Save <code>SKILL.md</code> under <code>~/.agents/skills/&lt;skill-name&gt;/</code>, then invoke <code>$skill-name</code>.</p></div></aside>';
+  return '<aside class="workflow-choice-blurb"><h2>Choose how to use this workflow</h2><div class="workflow-option"><p class="workflow-option-label">Option 1</p><h3>Copy prompt text</h3><p>Use this for a one-time run in the current Codex task. It does not save the workflow.</p><p class="workflow-option-note">Select <strong>View details</strong> in the library to open and copy the prompt text.</p></div><div class="workflow-option"><p class="workflow-option-label">Option 2</p><h3>Download a Codex skill</h3><p>Use this when the workflow should stay available for future Codex tasks. Save <code>SKILL.md</code> under <code>~/.agents/skills/&lt;skill-name&gt;/</code>, then invoke <code>$skill-name</code>.</p><p class="workflow-option-note">Select <strong>View details</strong> to copy the required-input template, replace its placeholders, and paste it below the skill invocation.</p></div></aside>';
 }
 
 function page(kicker, title, lead, content, markdownLead = false) {
@@ -365,6 +371,7 @@ function library() {
 
 function prompt(record) {
   const inputs = requiredInputsTable(record.requiredInputs);
+  const inputsTemplate = requiredInputsTemplate(record.requiredInputs);
   const prerequisites = prerequisitesTable(record.prerequisites);
   const headerDescription = record.useCase || record.description || "Reusable prompt record.";
   const source = record.sourceIssue ? '<a href="' + escapeHtml(record.sourceIssue) + '" target="_blank" rel="noreferrer">Original form submission</a>' : "Not provided.";
@@ -375,16 +382,17 @@ function prompt(record) {
   const paragraph = (value) => formattedContent(value);
   const promptText = record.promptText || "";
   const promptSection = '<section><div class="prompt-heading"><div><h2>Copy prompt text</h2><p class="section-description">Copy this text when you want to run the workflow once in your current Codex chat. It does not save the workflow for later.</p></div><button id="copy-prompt" class="button button-secondary button-small" type="button"' + (promptText ? "" : " disabled") + '>Copy prompt</button></div><p id="copy-prompt-status" class="copy-prompt-status" aria-live="polite"></p><pre><code>' + escapeHtml(promptText || "No prompt text provided.") + "</code></pre></section>";
+  const requiredInputsSection = '<section><div class="prompt-heading"><div><h2>Required inputs</h2><p class="field-description record-field-description">Files, links, context, or values needed before the workflow runs. Use the copyable template with a downloaded skill: replace each placeholder with the customer-specific value before running the skill.</p></div><button id="copy-inputs" class="button button-secondary button-small" type="button"' + (inputsTemplate ? "" : " disabled") + '>Copy input text</button></div><p id="copy-inputs-status" class="copy-prompt-status" aria-live="polite"></p>' + inputs + "</section>";
   const prerequisiteLink = record.prerequisiteLink ? '<p><a href="' + escapeHtml(record.prerequisiteLink) + '" target="_blank" rel="noreferrer">Open prerequisite link</a></p>' : "";
   const skillDetails = '<dl class="definition-list"><div><dt>Skill name</dt><dd><code>$' + escapeHtml(skillName) + '</code></dd></div><div><dt>Purpose and use case</dt><dd>' + escapeHtml(record.skillDescription || headerDescription) + "</dd></div></dl>";
-  const skillSection = skillAvailable ? '<section class="skill-install"><div class="skill-install-heading"><div><p class="eyebrow">Codex skill</p><h2>Download and install this skill</h2><p>A skill keeps this workflow available across future Codex work. Download the file, then place it in your local Codex skills folder.</p></div><button id="download-skill" class="button" type="button">Download SKILL.md</button></div>' + skillDetails + '<div class="skill-prerequisites">' + prerequisites + prerequisiteLink + '</div><ol class="skill-install-steps"><li>Download <code>SKILL.md</code>.</li><li>Create <code>~/.agents/skills/' + escapeHtml(skillName) + '/</code> on your computer and save the downloaded file there as <code>SKILL.md</code>.</li><li>Restart Codex if the skill does not appear.</li><li>In a new Codex task, type <code>$' + escapeHtml(skillName) + '</code>, or make a request that matches the skill description.</li></ol><p id="download-skill-status" class="copy-prompt-status" aria-live="polite"></p></section>' : '<section class="skill-install skill-install-unavailable"><p class="eyebrow">Codex skill</p><h2>Skill download unavailable</h2><p>This legacy record has prompt text only. Its skill file has not been generated yet.</p></section>';
+  const skillSection = skillAvailable ? '<section class="skill-install"><div class="skill-install-heading"><div><p class="eyebrow">Codex skill</p><h2>Download and install this skill</h2><p>A skill keeps this workflow available across future Codex work. Download the file, then place it in your local Codex skills folder.</p></div><button id="download-skill" class="button" type="button">Download SKILL.md</button></div>' + skillDetails + '<div class="skill-prerequisites">' + prerequisites + prerequisiteLink + '</div><ol class="skill-install-steps"><li>Download <code>SKILL.md</code>.</li><li>Create <code>~/.agents/skills/' + escapeHtml(skillName) + '/</code> on your computer and save the downloaded file there as <code>SKILL.md</code>.</li><li>Restart Codex if the skill does not appear.</li><li>In a new Codex task, type <code>$' + escapeHtml(skillName) + '</code>, or make a request that matches the skill description.</li><li>Copy the Required inputs template below, replace each <code>&lt;customer-entry on execution&gt;</code> placeholder, and paste the completed list below the skill invocation.</li></ol><p id="download-skill-status" class="copy-prompt-status" aria-live="polite"></p></section>' : '<section class="skill-install skill-install-unavailable"><p class="eyebrow">Codex skill</p><h2>Skill download unavailable</h2><p>This legacy record has prompt text only. Its skill file has not been generated yet.</p></section>';
   const details = '<div class="detail-table"><table><tbody><tr><th>Category</th><td>' + name(record.category) + '</td></tr><tr><th>Last updated</th><td>' + escapeHtml(record.lastReviewed || "Not provided") + '</td></tr><tr><th>Markdown record</th><td><a href="' + escapeHtml(markdownRecordUrl) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.path) + "</code></a></td></tr>" + (skillAvailable ? '<tr><th>Skill file</th><td><a href="' + escapeHtml(repositoryUrl + "/blob/main/" + record.skillPath.split("/").map(encodeURIComponent).join("/")) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.skillPath) + "</code></a></td></tr>" : "") + "</tbody></table></div>";
   const additionalNotes = [record.additionalInstructionsNotes, record.postExecutionSteps || record.nextSteps].filter(Boolean).join("\n\n");
   const additionalLink = record.additionalNotesLink || record.postExecutionLink;
   const recordSections = skillSection
     + section("Purpose and use case", "Explains the problem this workflow solves, its intended audience, and when Codex should select the paired skill.", paragraph(record.useCase || record.skillDescription || record.description))
     + section("Prerequisites", "Work, access, setup, files, or decisions required before running this workflow.", prerequisites + prerequisiteLink)
-    + section("Required inputs", "Files, links, context, or values needed before the workflow runs.", inputs)
+    + requiredInputsSection
     + section("Expected output", "The result Codex should produce and the checks that confirm a usable outcome.", paragraph(record.expectedOutput))
     + section("Additional Instructions and Post-Run Notes", "Follow-up work, publishing steps, validation checks, edge cases, and other guidance after the workflow runs.", paragraph(additionalNotes || "No additional instructions provided.") + (additionalLink ? '<p><a href="' + escapeHtml(additionalLink) + '" target="_blank" rel="noreferrer">Open related instructions</a></p>' : ""))
     + promptSection
@@ -403,6 +411,20 @@ function prompt(record) {
         window.setTimeout(() => { copyButton.textContent = "Copy prompt"; }, 1800);
       } catch {
         copyStatus.textContent = "Copy failed. Select the prompt text and copy it manually.";
+      }
+    });
+  }
+  const copyInputsButton = document.querySelector("#copy-inputs");
+  const copyInputsStatus = document.querySelector("#copy-inputs-status");
+  if (copyInputsButton && inputsTemplate) {
+    copyInputsButton.addEventListener("click", async () => {
+      try {
+        await copyText(inputsTemplate);
+        copyInputsButton.textContent = "Copied";
+        copyInputsStatus.textContent = "Input template copied. Replace each <customer-entry on execution> placeholder with the values for this task.";
+        window.setTimeout(() => { copyInputsButton.textContent = "Copy input text"; }, 1800);
+      } catch {
+        copyInputsStatus.textContent = "Copy failed. Copy the required-input labels from the table and add the customer-specific values manually.";
       }
     });
   }
@@ -443,7 +465,7 @@ function workflowItemsField(title, description, values, options) {
 }
 
 function requiredInputsField(values) {
-  return workflowItemsField("Required inputs", "Files, links, context, or values Codex needs before the workflow runs. Add one required input per row. Markdown renders in the published table, including headings, bold text, inline code, and links.", values, { inputName: "requiredInput", itemLabel: "Required input", rowsId: "required-input-rows", addButtonId: "add-required-input" });
+  return workflowItemsField("Required inputs", "Enter one reusable input label per row, such as Customer name or Reporting period. Do not enter customer-specific values. The published workflow keeps this table and provides a Copy input text button that builds an Inputs: template with a <customer-entry on execution> placeholder for every row. Markdown renders in the published table, including headings, bold text, inline code, and links.", values, { inputName: "requiredInput", itemLabel: "Required input", rowsId: "required-input-rows", addButtonId: "add-required-input" });
 }
 
 function prerequisitesField(values, linkValue) {
