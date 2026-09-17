@@ -33,15 +33,19 @@ function linkedInstructions(label, url) {
   return url ? `\n\n${label}: ${url}` : "";
 }
 
-function requiredInputs(value, fallback = "") {
+function workflowItems(value, fallback = "") {
   if (Array.isArray(value)) return value.map((item) => String(item).trim()).filter(Boolean);
   const source = String(value || fallback || "").trim();
   if (!source) return [];
-  return source.split("\n").map((item) => item.replace(/^\s*(?:[-*+]\s+|\d+[.)]\s+)/, "").trim()).filter(Boolean);
+  const lines = source.split("\n").filter((line) => line.trim());
+  if (lines.length >= 2 && lines[0].includes("|") && /^[\s|:-]+$/.test(lines[1].trim())) {
+    return lines.slice(2).map((line) => line.split("|").map((cell) => cell.trim()).filter(Boolean)[0]?.replaceAll("\\|", "|") || "").filter(Boolean);
+  }
+  return lines.map((item) => item.replace(/^\s*(?:[-*+]\s+|\d+[.)]\s+)/, "").trim()).filter(Boolean);
 }
 
-function inputList(value) {
-  return value.length ? value.map((item) => `- ${item}`).join("\n") : "No required inputs were provided.";
+function inputList(value, emptyMessage = "No required inputs were provided.") {
+  return value.length ? value.map((item) => `- ${item}`).join("\n") : emptyMessage;
 }
 
 function skillFile(record) {
@@ -57,7 +61,7 @@ Use this skill when the user's request matches the skill description. Follow the
 
 ## Prerequisites
 
-${record.prerequisites || "None provided."}${linkedInstructions("Prerequisite instructions", record.prerequisiteLink)}
+${inputList(record.prerequisites, "No prerequisites were provided.")}${linkedInstructions("Prerequisite link", record.prerequisiteLink)}
 
 ## Required inputs
 
@@ -87,9 +91,9 @@ const records = promptFiles(promptsRoot).map(parsePrompt).filter((record) => rec
     title,
     skillName,
     skillDescription: oneLine(metadata.skill_description || metadata.description || useCase || title),
-    prerequisites: metadata.prerequisites || section(body, "Prerequisites"),
+    prerequisites: workflowItems(metadata.prerequisites, section(body, "Prerequisites")),
     prerequisiteLink: metadata.prerequisite_link || "",
-    requiredInputs: requiredInputs(metadata.required_inputs, section(body, "Required inputs")),
+    requiredInputs: workflowItems(metadata.required_inputs, section(body, "Required inputs")),
     promptText: cleanPromptText(section(body, "Prompt text")),
     expectedOutput: metadata.expected_output || section(body, "Expected output and next steps"),
     additionalNotes: [metadata.additional_instructions_notes || section(body, "Additional Instructions and Post-Run Notes") || section(body, "Additional Instructions and Pre-Run Notes") || section(body, "Additional instructions and notes"), metadata.post_execution_steps || section(body, "After the prompt runs")].filter(Boolean).join("\n\n"),

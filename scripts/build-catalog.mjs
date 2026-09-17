@@ -25,11 +25,15 @@ function cleanPromptText(value) {
     .trim();
 }
 
-function requiredInputs(value, fallback = "") {
+function workflowItems(value, fallback = "") {
   if (Array.isArray(value)) return value.map((item) => String(item).trim()).filter(Boolean);
   const source = String(value || fallback || "").trim();
   if (!source) return [];
-  return source.split("\n").map((item) => item.replace(/^\s*(?:[-*+]\s+|\d+[.)]\s+)/, "").trim()).filter(Boolean);
+  const lines = source.split("\n").filter((line) => line.trim());
+  if (lines.length >= 2 && lines[0].includes("|") && /^[\s|:-]+$/.test(lines[1].trim())) {
+    return lines.slice(2).map((line) => line.split("|").map((cell) => cell.trim()).filter(Boolean)[0]?.replaceAll("\\|", "|") || "").filter(Boolean);
+  }
+  return lines.map((item) => item.replace(/^\s*(?:[-*+]\s+|\d+[.)]\s+)/, "").trim()).filter(Boolean);
 }
 
 function skillSlug(value) {
@@ -53,7 +57,7 @@ const records = promptFiles(promptsRoot)
     description: metadata.description,
     category: metadata.category,
     tags: Array.isArray(metadata.tags) ? metadata.tags : [],
-    requiredInputs: requiredInputs(metadata.required_inputs, section(body, "Required inputs")),
+    requiredInputs: workflowItems(metadata.required_inputs, section(body, "Required inputs")),
     expectedOutput: metadata.expected_output,
     nextSteps: metadata.next_steps,
     additionalInstructionsNotes: metadata.additional_instructions_notes || section(body, "Additional Instructions and Post-Run Notes") || section(body, "Additional Instructions and Pre-Run Notes") || section(body, "Additional instructions and notes"),
@@ -61,7 +65,7 @@ const records = promptFiles(promptsRoot)
     skillName: metadata.skill_name || (generatedSkillPath ? skillSlug(metadata.title) : ""),
     skillDescription: metadata.skill_description || (generatedSkillPath ? String(metadata.description || "").replace(/\s+/g, " ").trim().slice(0, 300) : ""),
     skillPath: generatedSkillPath,
-    prerequisites: metadata.prerequisites || section(body, "Prerequisites"),
+    prerequisites: workflowItems(metadata.prerequisites, section(body, "Prerequisites")),
     prerequisiteLink: metadata.prerequisite_link || "",
     postExecutionSteps: metadata.post_execution_steps || section(body, "After the prompt runs"),
     postExecutionLink: metadata.post_execution_link || "",
