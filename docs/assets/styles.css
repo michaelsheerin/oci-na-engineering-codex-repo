@@ -283,6 +283,9 @@ input:focus, select:focus { outline: 3px solid rgba(189, 44, 44, .18); border-co
 .skill-prerequisites .rich-table { max-width: none; margin: 18px 0 12px; }
 .skill-prerequisites > p { margin: 0 0 22px; }
 .skill-install code { padding: 2px 5px; border-radius: 3px; background: #f1e8e8; color: var(--ink); font-size: .9em; }
+.inline-copy-button { display: inline-block; min-height: 24px; margin-left: 6px; padding: 2px 7px; border: 1px solid #b9c2cb; border-radius: 3px; background: var(--white); color: var(--accent-dark); font: inherit; font-size: .71rem; font-weight: 760; line-height: 1.2; vertical-align: middle; cursor: pointer; }
+.inline-copy-button:hover { border-color: var(--accent); background: #fff7f7; }
+.inline-copy-button:focus { outline: 3px solid rgba(189, 44, 44, .18); border-color: var(--accent); }
 .skill-install-steps { display: grid; gap: 10px; margin: 0; padding-left: 24px; }
 .skill-install-steps li::marker { color: var(--accent); font-weight: 760; }
 .skill-install-steps ol { display: grid; gap: 7px; margin: 10px 0 0; padding-left: 22px; }
