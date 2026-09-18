@@ -1,6 +1,6 @@
 ---
 name: generate-gold-standard-rate-card-for-cpq-reconciliation
-description: "This prompt establishes a local Gold Standard Rate Card from a previously validated CPQ quote. This approved CPQ baseline creates a consistent reference point for reconciliation analysis of future CPQ quotes. The prompt also compares the p"
+description: "This prompt establishes a local Gold Standard Rate Card from a previously validated CPQ quote. This approved CPQ baseline creates a consistent reference point for reconciliation analysis of future CPQ quotes. In large accounts with many ODs, Addendums, custom-SKUs or contract language, SPA/SPM/CPQ c"
 ---
 
 # Generate Gold Standard Rate Card for CPQ Reconciliation
@@ -9,36 +9,20 @@ Use this skill when the user's request matches the skill description. Follow the
 
 ## Prerequisites
 
-None provided.
+- CPQ Access
 
 ## Required inputs
 
-- <html xmlns:o="urn:schemas-microsoft-com:office:office"
-- xmlns:dt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882"
-- xmlns="http://www.w3.org/TR/REC-html40">
-- <head>
-- <meta name=ProgId content=OneNote.File>
-- <meta name=Generator content="Microsoft OneNote 15">
-- </head>
-- <body lang=en-US style='font-family:Calibri;font-size:11.0pt'>
-- <!--StartFragment-->
-- <div style='direction:ltr'>
-- Input | Requirement
-- -- | --
-- SPA Rate Card file | Download   the SPA rate card before starting. Provide the local file path. The source   supports CSV or Excel, with variable length and column order.
-- Validated CPQ link | Provide   a link to a CPQ quote whose rate card has been manually validated with   confidence. This quote supplies the proposed gold-standard baseline.
-- Output folder | Optional.   Specify a folder only when it differs from the SPA source folder.
-- </div>
-- <!--EndFragment-->
-- </body>
-- </html>
+- CPQ Link of Previously Validated Rate Card
+- File Path of CSV Extract from SPA Rate Card
+- Output folder (optional)
 
 ## Workflow instructions
 
 ```text
 Create a local Gold Standard Rate Card reconciliation workbook.
 
-Inputs
+Inputs (or see Required Inputs above).
 
 SPA Rate Card file:
 [PASTE LOCAL SPA RATE CARD FILE PATH]
@@ -211,7 +195,9 @@ CPQ-Gold_to_SPA   Validation | Editable   comparison view. Includes SKU, Product
 
 </html>
 
-## Additional instructions and boundaries
+## Additional Instructions and Post-Run Notes
 
-1. Download SPA Rate Card and save it to a preferred location. This folder will be the target location for any AI-generated files, unless otherwise specified in the prompt.
-2. Navigate to and capture link of CPQ Quote where you are confident in the accuracy of the rate card.
+Once complete, you will have a local Gold-Standard Rate Card to compare and reconcile future CPQ quotes. See the link below for the prompt to identify those discrepancies and provide reconciliation suggestions.
+If you want to validate this CPQ quote against the SPA Rate Card, see the last tab in the file for a list of SKUs with net unit price discrepancies. You must then manually assess (e.g. via ODs, Addendums, etc.) which net unit price is accurate and adjust the Gold-Standard tab accordingly.
+
+Related instructions: https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fprompt-2.md
