@@ -9,9 +9,7 @@ Use this skill when the user's request matches the skill description. Follow the
 
 ## Purpose and use case
 
-This prompt establishes a local Gold Standard Rate Card from a previously validated CPQ quote. This approved CPQ baseline creates a consistent reference point for reconciliation analysis of future CPQ quotes. In large accounts with many ODs, Addendums, custom-SKUs or contract language, SPA/SPM/CPQ can often and repeatedly produce Net Unit Price/Selling Price errors. This prompt produces a local standard that is isolated from these computing errors. 
-
-The prompt also compares the CPQ standard to SPA Rate Card if additional manual validation is needed.
+This prompt establishes a local Gold Standard Rate Card from a previously validated CPQ quote. This approved CPQ baseline creates a consistent reference point for reconciliation analysis of future CPQ quotes. In large accounts with many ODs, Addendums, custom-SKUs or contract language, SPA/SPM/CPQ c
 
 ## Prerequisites
 
@@ -205,5 +203,7 @@ CPQ-Gold_to_SPA   Validation | Editable   comparison view. Includes SKU, Product
 
 Once complete, you will have a local Gold-Standard Rate Card to compare and reconcile future CPQ quotes. See the link below for the prompt to identify those discrepancies and provide reconciliation suggestions.
 If you want to validate this CPQ quote against the SPA Rate Card, see the last tab in the file for a list of SKUs with net unit price discrepancies. You must then manually assess (e.g. via ODs, Addendums, etc.) which net unit price is accurate and adjust the Gold-Standard tab accordingly.
+
+### test
 
 Related instructions: [Open instructions](https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fprompt-2.md)
