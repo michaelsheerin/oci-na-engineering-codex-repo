@@ -36,9 +36,11 @@ Optional:
 
 Build one responsive dashboard with:
 - Customer filter: all customers or one customer
-- Time grouping: monthly or weekly
-- Visible range: latest 4 periods, latest 8 periods, or all periods
-  - Use “months” labels for monthly mode and “weeks” labels for weekly mode
+- Time grouping: daily, weekly, or monthly
+- Visible range:
+  - Daily: latest 7 days, latest 14 days, or all periods
+  - Weekly: latest 4 weeks, latest 8 weeks, or all periods
+  - Monthly: latest 4 months, latest 8 months, or all periods
 - Summary metrics for total hours, number of customers shown, and largest selected period
 - One stacked bar chart showing hours by customer across the selected periods
 
