@@ -11,7 +11,7 @@ Use this skill when the user's request matches the skill description. Follow the
 
 Before executing this workflow, check whether every required input below already has a clear value in the user's request or the current conversation.
 
-If one or more required values are missing and `strategic_install_required_input_form.collect_required_inputs` is available, call it once with only the entries below that are still missing. Preserve each label and required setting:
+If one or more required values are missing and `na_engineering_required_input_form.collect_required_inputs` is available, call it once with only the entries below that are still missing. Preserve each label and required setting:
 
 ```json
 {

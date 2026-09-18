@@ -6,8 +6,8 @@ import { parsePrompt, promptFiles } from "./prompt-metadata.mjs";
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const promptsRoot = path.join(repositoryRoot, "prompts");
 const indexPath = path.join(promptsRoot, "README.md");
-const submissionUrl = "https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=submit";
-const browseUrl = "https://michaelsheerin.github.io/oci-strategic-install-codex-repo/";
+const submissionUrl = "https://oci-na-engineering-prompt-library.msheerin01.workers.dev/?view=submit";
+const browseUrl = "https://michaelsheerin.github.io/oci-na-engineering-codex-repo/";
 
 function displayCategory(category) {
   return (category || "other").replaceAll("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());

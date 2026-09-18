@@ -1,14 +1,14 @@
 {
-  "name": "strategic-install",
+  "name": "na-engineering",
   "interface": {
-    "displayName": "Strategic Install"
+    "displayName": "NA Engineering"
   },
   "plugins": [
     {
-      "name": "strategic-install-required-input-form",
+      "name": "na-engineering-required-input-form",
       "source": {
         "source": "local",
-        "path": "./plugins/strategic-install-required-input-form"
+        "path": "./plugins/na-engineering-required-input-form"
       },
       "policy": {
         "installation": "AVAILABLE",

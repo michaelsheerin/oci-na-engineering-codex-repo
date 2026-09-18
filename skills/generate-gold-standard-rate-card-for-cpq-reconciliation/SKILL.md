@@ -11,7 +11,7 @@ Use this skill when the user's request matches the skill description. Follow the
 
 Before executing this workflow, check whether every required input below already has a clear value in the user's request or the current conversation.
 
-If one or more required values are missing and `strategic_install_required_input_form.collect_required_inputs` is available, call it once with only the entries below that are still missing. Preserve each label and required setting:
+If one or more required values are missing and `na_engineering_required_input_form.collect_required_inputs` is available, call it once with only the entries below that are still missing. Preserve each label and required setting:
 
 ```json
 {
@@ -244,4 +244,4 @@ Once complete, you will have a local Gold-Standard Rate Card to compare and reco
 
 If you want to validate this CPQ quote against the SPA Rate Card, see the last tab in the file for a list of SKUs with net unit price discrepancies. You must then manually assess (e.g. via ODs, Addendums, etc.) which net unit price is accurate and adjust the Gold-Standard tab accordingly.
 
-Related instructions: [Open instructions](https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fprompt-2.md)
+Related instructions: [Open instructions](https://oci-na-engineering-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fprompt-2.md)

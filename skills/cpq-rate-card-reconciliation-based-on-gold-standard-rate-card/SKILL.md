@@ -11,7 +11,7 @@ Use this skill when the user's request matches the skill description. Follow the
 
 Before executing this workflow, check whether every required input below already has a clear value in the user's request or the current conversation.
 
-If one or more required values are missing and `strategic_install_required_input_form.collect_required_inputs` is available, call it once with only the entries below that are still missing. Preserve each label and required setting:
+If one or more required values are missing and `na_engineering_required_input_form.collect_required_inputs` is available, call it once with only the entries below that are still missing. Preserve each label and required setting:
 
 ```json
 {
@@ -56,7 +56,7 @@ The output provides a concise list of SKUs where discrepancies occur, and what t
 
 - Complete 'Generate Gold Standard Rate Card for CPQ Reconciliation' Prompt
 
-Prerequisite link: [Open instructions](https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fprompt-1.md)
+Prerequisite link: [Open instructions](https://oci-na-engineering-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fprompt-1.md)
 
 ## Required inputs
 

@@ -2,9 +2,9 @@
 
 ## Preferred submission method
 
-Use the [Prompt Library submission page](https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=submit). Sign in with GitHub, complete the workflow fields, and publish the prompt record and paired Codex skill directly.
+Use the [Prompt Library submission page](https://oci-na-engineering-prompt-library.msheerin01.workers.dev/?view=submit). Sign in with GitHub, complete the workflow fields, and publish the prompt record and paired Codex skill directly.
 
-Every submission automatically creates a reader-friendly prompt record in [Browse prompts](https://michaelsheerin.github.io/oci-strategic-install-codex-repo/) and a `skills/<skill-name>/SKILL.md` file, with no review, Issue, or manual publishing step.
+Every submission automatically creates a reader-friendly prompt record in [Browse prompts](https://michaelsheerin.github.io/oci-na-engineering-codex-repo/) and a `skills/<skill-name>/SKILL.md` file, with no review, Issue, or manual publishing step.
 
 ## Direct pull request option
 

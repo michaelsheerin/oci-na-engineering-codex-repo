@@ -1,0 +1,20 @@
+{
+  "name": "na-engineering-required-input-form",
+  "version": "0.1.0+codex.20260918214845",
+  "description": "Collect required NA Engineering skill inputs in a Codex form.",
+  "author": {
+    "name": "Michael Sheerin"
+  },
+  "interface": {
+    "displayName": "NA Engineering Required Input Form",
+    "shortDescription": "Collect skill inputs in a Codex form.",
+    "longDescription": "Shows non-sensitive required inputs in a Codex form before a NA Engineering skill starts. The service does not store submitted values.",
+    "developerName": "Michael Sheerin",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive"
+    ],
+    "defaultPrompt": "Use the NA Engineering Required Input Form to collect missing skill inputs."
+  },
+  "mcpServers": "./.mcp.json"
+}

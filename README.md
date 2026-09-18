@@ -1,13 +1,13 @@
-# Strategic Install Codex Prompt Library
+# NA Engineering Codex Prompt Library
 
-A shared library of proven Codex prompts and reusable skills for RAs supporting Strategic Install work.
+A shared library of proven Codex prompts and reusable skills for RAs supporting NA Engineering work.
 
 The library turns effective individual workflows into reusable team assets. Each form submission creates a reader-friendly prompt record and a paired `SKILL.md` file for Codex. The goal is faster, more consistent work without losing the context required for sound judgment.
 
 ## Start here
 
-- [Browse prompts](https://michaelsheerin.github.io/oci-strategic-install-codex-repo/)
-- [Submit a prompt](https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=submit)
+- [Browse prompts](https://michaelsheerin.github.io/oci-na-engineering-codex-repo/)
+- [Submit a prompt](https://oci-na-engineering-prompt-library.msheerin01.workers.dev/?view=submit)
 - [Read the contribution guide](CONTRIBUTING.md)
 - [Use the prompt record template](prompts/_template.md)
 

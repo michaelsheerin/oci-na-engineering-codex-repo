@@ -20,7 +20,7 @@ The output provides a concise list of SKUs where discrepancies occur, and what t
 | --- |
 | Complete 'Generate Gold Standard Rate Card for CPQ Reconciliation' Prompt |
 
-Prerequisite link: [Open instructions](https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fprompt-1.md)
+Prerequisite link: [Open instructions](https://oci-na-engineering-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fprompt-1.md)
 
 ## Required inputs
 
@@ -375,7 +375,7 @@ skill_name: "cpq-rate-card-reconciliation-based-on-gold-standard-rate-card"
 skill_description: "This prompt reconciles a newly generated CPQ rate card against the approved local Gold Standard Rate Card created in Prompt 'Generate Gold Standard Rate Card for CPQ Reconciliation'. This provides a repeatable validation process for future quotes and identifies whether the current CPQ Unit Selling"
 skill_path: "skills/cpq-rate-card-reconciliation-based-on-gold-standard-rate-card/SKILL.md"
 prerequisites: ["Complete 'Generate Gold Standard Rate Card for CPQ Reconciliation' Prompt"]
-prerequisite_link: "https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fprompt-1.md"
+prerequisite_link: "https://oci-na-engineering-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fprompt-1.md"
 contact_name: "Michael Sheerin"
 contact_email: "michael.sheerin@oracle.com"
 source_issue: ""

@@ -19,7 +19,7 @@ Run this prompt when the report needs current dedicated-pool capacity data, shap
 | Customer in Dedicated Pool |
 | C4PO Access and MCP Server Configuration (see link) |
 
-Prerequisite link: [Open instructions](https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fcodex-c4po-mcp-server-setup-mtlqxl90.md)
+Prerequisite link: [Open instructions](https://oci-na-engineering-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fcodex-c4po-mcp-server-setup-mtlqxl90.md)
 
 ## Required inputs
 
@@ -333,7 +333,7 @@ skill_name: "generate-a-weekly-dedicated-pool-capacity-report"
 skill_description: "Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. It queries live Compute Admin inventory, validates Global-AD and Tenant-AD mappings from authoritative metadata, produces one current-date CSV per Global-AD, and builds a"
 skill_path: "skills/generate-a-weekly-dedicated-pool-capacity-report/SKILL.md"
 prerequisites: ["Customer in Dedicated Pool","C4PO Access and MCP Server Configuration (see link)"]
-prerequisite_link: "https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fcodex-c4po-mcp-server-setup-mtlqxl90.md"
+prerequisite_link: "https://oci-na-engineering-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fcodex-c4po-mcp-server-setup-mtlqxl90.md"
 contact_name: "Michael Sheerin"
 contact_email: "michael.sheerin@oracle.com"
 source_issue: ""

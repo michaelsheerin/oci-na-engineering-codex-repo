@@ -1,9 +1,9 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
   "mcpServers": {
-    "strategic_install_required_input_form": {
+    "na_engineering_required_input_form": {
       "type": "streamable-http",
-      "url": "https://strategic-install-required-input-form.msheerin01.workers.dev/mcp"
+      "url": "https://na-engineering-required-input-form.msheerin01.workers.dev/mcp"
     }
   }
 }
