@@ -303,7 +303,7 @@ function requiredInputsTable(value) {
 }
 
 function prerequisitesTable(value, heading = "Prerequisite", referenceLink = "") {
-  const referenceLinks = referenceLink ? [{ label: "Prerequisite instructions", url: referenceLink }] : [];
+  const referenceLinks = referenceLink ? [{ label: "Associated link", url: referenceLink }] : [];
   return workflowItemsTable(value, heading, "No prerequisites provided.", "prerequisites-table", referenceLinks);
 }
 
