@@ -244,7 +244,7 @@ async function downloadSkill(record) {
   const blob = await response.blob();
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = `${record.skillName || skillSlug(record.title)}-SKILL.md`;
+  link.download = "SKILL.md";
   document.body.append(link);
   link.click();
   link.remove();
