@@ -517,7 +517,7 @@ function form(record) {
   const categoryOptions = categories.map((category) => '<option value="' + category + '"' + (selectedCategory === category ? " selected" : "") + ">" + name(category) + "</option>").join("");
   const draftMessage = draft ? "Your previous entry was restored after sign-in. Review the fields, then select Publish workflow." : "";
   const skillName = value("skillName", record?.skillName || skillSlug(record?.title));
-  const skillDescription = value("skillDescription", record?.skillDescription || record?.useCase || record?.description);
+  const skillDescription = value("skillDescription", record?.useCase || record?.skillDescription || record?.description);
   const additionalNotes = value("additionalNotes", [record?.additionalInstructionsNotes, record?.postExecutionSteps || record?.nextSteps].filter(Boolean).join("\n\n"));
   const sharingStandard = '<article class="form-intro"><h2>' + (editing ? "Update process" : "Create a prompt and Codex skill") + '</h2><p>This submission creates two files: a readable Markdown workflow record for the library and a reusable <code>SKILL.md</code> file for Codex. The same workflow instructions power both outputs.</p><p>Fields marked Required create a valid Codex skill. The remaining fields make the workflow easier to prepare, validate, and continue after execution.</p><p>Remove customer data, credentials, personal data, internal identifiers, and non-public source material. Use placeholders for variable information.</p><div class="form-formatting-note"><strong>Formatting</strong><p>Long-form fields support Markdown headings, bullets, bold text, and links. Prompt text is preserved exactly for copying and is placed inside the generated skill file.</p></div><a class="text-link-dark" href="' + href("contribute") + '">Read the contribution guide</a></article>';
   const categoryField = '<label class="form-field" for="category"><span>Category</span><small class="field-description">The work area used to organize and filter this record.</small><select id="category" name="category"><option value="">Select a category</option>' + categoryOptions + "</select></label>";
@@ -532,9 +532,10 @@ function form(record) {
     + promptTextField(value("promptText", record?.promptText))
     + input("Your name", "contactName", value("contactName", record?.contactName), 0, "The person to contact with questions about this record.")
     + input("Your work email", "contactEmail", value("contactEmail", record?.contactEmail), 0, "The work email for questions or feedback about this record.");
-  const deleteAction = editing ? '<button id="delete-prompt" class="button button-danger" type="button">Delete prompt</button>' : "";
-  app.innerHTML = page(editing ? "Workflow editor" : "Contribute", editing ? "Edit a prompt and skill" : "Submit a prompt and skill", editing ? "Update the Markdown record and its paired Codex skill together." : "Create a reader-friendly Markdown workflow record and a downloadable Codex skill from one form.", '<section class="container form-layout">' + sharingStandard + '<form id="prompt-form" class="prompt-form" data-path="' + escapeHtml(record?.path || "") + '" data-skill-path="' + escapeHtml(record?.skillPath || "") + '">' + fields + '<div class="form-actions"><button class="button" type="submit">' + (editing ? "Save workflow update" : "Publish prompt and skill") + '</button>' + deleteAction + '<a id="cancel-prompt-form" class="button button-secondary" href="' + (editing ? href("prompt", { prompt: record.path }) : href("library")) + '">Cancel</a></div><p id="submission-status" class="submission-status" aria-live="polite">' + escapeHtml(draftMessage) + "</p></form></section>");
-  if (draft) document.querySelector("#cancel-prompt-form").addEventListener("click", clearSubmissionDraft);
+  const deleteAction = editing ? '<button class="button button-danger delete-prompt" type="button">Delete prompt</button>' : "";
+  const formActions = '<div class="form-actions"><button class="button" type="submit">' + (editing ? "Save workflow update" : "Publish prompt and skill") + '</button>' + deleteAction + '<a class="button button-secondary cancel-prompt-form" href="' + (editing ? href("prompt", { prompt: record.path }) : href("library")) + '">Cancel</a></div>';
+  app.innerHTML = page(editing ? "Workflow editor" : "Contribute", editing ? "Edit a prompt and skill" : "Submit a prompt and skill", editing ? "Update the Markdown record and its paired Codex skill together." : "Create a reader-friendly Markdown workflow record and a downloadable Codex skill from one form.", '<section class="container form-layout">' + sharingStandard + '<form id="prompt-form" class="prompt-form" data-path="' + escapeHtml(record?.path || "") + '" data-skill-path="' + escapeHtml(record?.skillPath || "") + '">' + formActions + fields + formActions + '<p id="submission-status" class="submission-status" aria-live="polite">' + escapeHtml(draftMessage) + "</p></form></section>");
+  if (draft) document.querySelectorAll(".cancel-prompt-form").forEach((button) => button.addEventListener("click", clearSubmissionDraft));
   const promptTextPaste = document.querySelector("#prompt-text-paste");
   const promptTextUpload = document.querySelector("#prompt-text-upload");
   const promptTextArea = document.querySelector("#promptText");
@@ -551,13 +552,13 @@ function form(record) {
   document.querySelectorAll('input[name="promptTextSource"]').forEach((option) => option.addEventListener("change", setPromptTextSource));
   setPromptTextSource();
   const formElement = document.querySelector("#prompt-form");
-  const deleteButton = document.querySelector("#delete-prompt");
-  if (deleteButton) deleteButton.addEventListener("click", async () => {
+  const deleteButtons = [...document.querySelectorAll(".delete-prompt")];
+  const saveButtons = [...formElement.querySelectorAll("button[type=submit]")];
+  deleteButtons.forEach((deleteButton) => deleteButton.addEventListener("click", async () => {
     if (!window.confirm('Delete "' + (record?.title || "this prompt") + '"? This permanently removes the Markdown record and its paired SKILL.md file from the repository.')) return;
     const status = document.querySelector("#submission-status");
-    const saveButton = formElement.querySelector("button[type=submit]");
-    deleteButton.disabled = true;
-    saveButton.disabled = true;
+    deleteButtons.forEach((button) => { button.disabled = true; });
+    saveButtons.forEach((button) => { button.disabled = true; });
     status.textContent = "Deleting the prompt record and Codex skill...";
     try {
       const response = await fetch("/api/prompt-submissions", { method: "DELETE", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ path: formElement.dataset.path, skillPath: formElement.dataset.skillPath }) });
@@ -571,10 +572,10 @@ function form(record) {
       window.location.assign(deletionRedirect());
     } catch (error) {
       status.textContent = error.message || "The prompt was not deleted. Try again.";
-      deleteButton.disabled = false;
-      saveButton.disabled = false;
+      deleteButtons.forEach((button) => { button.disabled = false; });
+      saveButtons.forEach((button) => { button.disabled = false; });
     }
-  });
+  }));
   const configureListEditor = (rowsId, addButtonId, inputName, itemLabel) => {
     const rowsContainer = document.querySelector("#" + rowsId);
     const refreshRows = () => {
@@ -632,8 +633,7 @@ function form(record) {
     data.existingPath = event.currentTarget.dataset.path;
     data.existingSkillPath = event.currentTarget.dataset.skillPath;
     const status = document.querySelector("#submission-status");
-    const button = event.currentTarget.querySelector("button[type=submit]");
-    button.disabled = true;
+    saveButtons.forEach((button) => { button.disabled = true; });
     status.textContent = "Publishing your Markdown record and Codex skill...";
     try {
       const uploadSelected = data.promptTextSource === "upload";
@@ -662,7 +662,7 @@ function form(record) {
       window.location.assign(libraryRedirect(result));
     } catch (error) {
       status.textContent = error.message || "The workflow was not published. Try again.";
-      button.disabled = false;
+      saveButtons.forEach((button) => { button.disabled = false; });
     }
   });
 }
