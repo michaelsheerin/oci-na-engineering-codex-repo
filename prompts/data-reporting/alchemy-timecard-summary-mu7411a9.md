@@ -16,11 +16,13 @@ A way to summarize your hours logged in Alchemy by week and month, and broken do
 | --- |
 | Access to Alchemy and Alchemy Analytics |
 
+Prerequisite link: [Open instructions](https://dtcoac-orasenatdpltinfomgmt03-ia.analytics.ocp.oraclecloud.com/ui/dv/ui/project.jsp?pageid=visualAnalyzer&reportmode=full&reportpath=%2F%40Catalog%2Fshared%2FNA%20Alchemy%2FAlchemy%20Dashboards)
+
 ## Required inputs
 
 | Required input |
 | --- |
-| CSV download from Alchemy Analytics -> Time Keeper Details -> Activity Hour Log |
+| CSV download from Alchemy Analytics (Time Keeper Details -> Filter your name -> Export Activity Hour Log) |
 
 ## Expected output and next steps
 
@@ -28,7 +30,11 @@ A dashboard showing your hours logged in Alchemy by week or month and broken dow
 
 ## Additional Instructions and Post-Run Notes
 
-Open index.html to start
+To export Alchemy Activity CSV, navigate to the Time Keeper Details tab, filter for your name under ECA Name, click Apply. 
+
+Then navigate to the Activity Hour log table, click the three dots, and Export as CSV. Save in any target folder.
+
+Related instructions: [Open instructions](https://dtcoac-orasenatdpltinfomgmt03-ia.analytics.ocp.oraclecloud.com/ui/dv/ui/project.jsp?pageid=visualAnalyzer&reportmode=full&reportpath=%2F%40Catalog%2Fshared%2FNA%20Alchemy%2FAlchemy%20Dashboards)
 
 ## Prompt text
 
@@ -86,16 +92,16 @@ title: "Alchemy Timecard Summary"
 description: "A way to summarize your hours logged in Alchemy by week and month, and broken down by account."
 category: "data-reporting"
 tags: []
-required_inputs: ["CSV download from Alchemy Analytics -> Time Keeper Details -> Activity Hour Log"]
+required_inputs: ["CSV download from Alchemy Analytics (Time Keeper Details -> Filter your name -> Export Activity Hour Log)"]
 expected_output: "A dashboard showing your hours logged in Alchemy by week or month and broken down by account."
 next_steps: ""
-additional_instructions_notes: "Open index.html to start"
-additional_instructions_link: ""
+additional_instructions_notes: "To export Alchemy Activity CSV, navigate to the Time Keeper Details tab, filter for your name under ECA Name, click Apply. \n\nThen navigate to the Activity Hour log table, click the three dots, and Export as CSV. Save in any target folder."
+additional_instructions_link: "https://dtcoac-orasenatdpltinfomgmt03-ia.analytics.ocp.oraclecloud.com/ui/dv/ui/project.jsp?pageid=visualAnalyzer&reportmode=full&reportpath=%2F%40Catalog%2Fshared%2FNA%20Alchemy%2FAlchemy%20Dashboards"
 skill_name: "alchemy-timecard-summary"
 skill_description: "A way to summarize your hours logged in Alchemy by week and month, and broken down by account."
 skill_path: "skills/alchemy-timecard-summary/SKILL.md"
 prerequisites: ["Access to Alchemy and Alchemy Analytics"]
-prerequisite_link: ""
+prerequisite_link: "https://dtcoac-orasenatdpltinfomgmt03-ia.analytics.ocp.oraclecloud.com/ui/dv/ui/project.jsp?pageid=visualAnalyzer&reportmode=full&reportpath=%2F%40Catalog%2Fshared%2FNA%20Alchemy%2FAlchemy%20Dashboards"
 contact_name: "Nicholas Chin"
 contact_email: "nicholas.chin@oracle.com"
 source_issue: ""
