@@ -3,7 +3,7 @@ const repositoryUrl = "https://github.com/michaelsheerin/oci-strategic-install-c
 const rawRepositoryUrl = "https://raw.githubusercontent.com/michaelsheerin/oci-strategic-install-codex-repo/main";
 const publicLibraryUrl = "https://michaelsheerin.github.io/oci-strategic-install-codex-repo/?view=library";
 const publishingServiceUrl = "https://oci-strategic-install-prompt-library.msheerin01.workers.dev";
-const requiredInputFormGuideUrl = repositoryUrl + "/blob/main/plugins/strategic-install-required-input-form/README.md";
+const pluginInstallCommand = "codex plugin marketplace add https://github.com/michaelsheerin/oci-strategic-install-codex-repo.git --sparse .agents/plugins --sparse plugins/strategic-install-required-input-form";
 const categories = ["analysis", "customer-preparation", "data-reporting", "project-management", "research", "technical-work", "writing-communication", "other"];
 const submissionDraftKey = "strategic-install-prompt-library-submission-draft";
 let prompts = [];
@@ -289,9 +289,24 @@ function requiredInputsTemplate(value) {
 
 function oneTimeSkillSetup(location) {
   const lead = location === "detail"
-    ? '<p class="one-time-skill-setup-lead">This is a one-time prerequisite for using skills in Codex. If you have completed it already, proceed to <strong>Download and install this skill</strong> below.</p>'
-    : '<p class="one-time-skill-setup-lead">Complete this one-time setup before installing your first Codex skill.</p>';
-  return '<aside class="one-time-skill-setup"><h2>One-time Codex skill setup</h2>' + lead + '<div class="skill-folder-prerequisite"><h3>1. Create the skills folder</h3><p>Create this folder structure once. Each downloaded skill later goes in its own subfolder within <code>skills</code>.</p><ol><li>Navigate to your user-profile directory:<ul><li>Windows: <code>C:\\Users\\&lt;username&gt;\\</code></li><li>Mac: <code>/Users/&lt;username&gt;/</code></li></ul></li><li>Create a folder named <code>.agents</code>.</li><li>Inside <code>.agents</code>, create a folder named <code>skills</code>.</li></ol></div><div class="skill-form-prerequisite"><h3>2. Install the required-input form helper</h3><p>Install this once before using a skill with Required Inputs. The helper opens a Codex form for the skill-specific values and does not store submitted values.</p><p><a href="' + requiredInputFormGuideUrl + '" target="_blank" rel="noreferrer">Open the one-time plugin setup guide</a></p></div></aside>';
+    ? 'If you have not used Codex skills before, expand to view the one-time prerequisite steps. If you have completed them, proceed to <strong>Download and install this skill</strong> below.'
+    : 'If you have not used Codex skills before, expand to view the one-time prerequisite steps before downloading a skill.';
+  const pluginCommand = '<code>' + escapeHtml(pluginInstallCommand) + '</code><button class="inline-copy-button" type="button" data-copy-text="' + escapeHtml(pluginInstallCommand) + '" aria-label="Copy plugin installation command" title="Copy plugin installation command">Copy</button>';
+  return '<details class="one-time-skill-setup"><summary><span><span class="one-time-skill-setup-title">Important: One-Time Codex Skill Setup</span><span class="one-time-skill-setup-lead">' + lead + '</span></span><span class="one-time-skill-setup-toggle" aria-hidden="true"></span></summary><div class="one-time-skill-setup-body"><div class="skill-folder-prerequisite"><h3>1. Create the skills folder</h3><p>Create this folder structure once. Each downloaded skill later goes in its own subfolder within <code>skills</code>.</p><ol><li>Navigate to your user-profile directory:<ul><li>Windows: <code>C:\\Users\\&lt;username&gt;\\</code></li><li>Mac: <code>/Users/&lt;username&gt;/</code></li></ul></li><li>Create a folder named <code>.agents</code>.</li><li>Inside <code>.agents</code>, create a folder named <code>skills</code>.</li></ol></div><div class="skill-form-prerequisite"><h3>2. Optional: Install the Required Inputs form helper</h3><p>This one-time plugin opens a fill-in form for missing inputs. Without it, skills ask for missing values in chat.</p><ol><li>Open PowerShell on Windows or Terminal on Mac.</li><li>Run this command:<div class="one-time-plugin-command">' + pluginCommand + '</div></li><li>In Codex, open <strong>Plugins</strong>. Under the <strong>Strategic Install</strong> marketplace, install <strong>Strategic Install Required Input Form</strong>.</li><li>Start a new Codex task.</li></ol></div></div></details>';
+}
+
+function bindInlineCopyButtons(scope = document) {
+  scope.querySelectorAll(".inline-copy-button[data-copy-text]").forEach((button) => button.addEventListener("click", async () => {
+    const originalText = "Copy";
+    try {
+      await copyText(button.dataset.copyText || "");
+      button.textContent = "Copied";
+      window.setTimeout(() => { button.textContent = originalText; }, 1800);
+    } catch {
+      button.textContent = "Failed";
+      window.setTimeout(() => { button.textContent = originalText; }, 1800);
+    }
+  }));
 }
 
 function workflowChoiceBlurb(location) {
@@ -356,6 +371,7 @@ function library() {
   const creators = [...new Set(prompts.map(creatorKey).filter(Boolean))].sort((left, right) => left.localeCompare(right));
   const creatorOptions = creators.map((value) => '<option value="' + escapeHtml(value) + '">' + escapeHtml(value) + '</option>').join("");
   app.innerHTML = page("Prompt and skill catalog", "Browse the library", "Find a reusable workflow, then copy its prompt or download its Codex skill for continued use.", submissionNotice() + '<section class="library-section"><div class="container"><div class="section-heading"><div><p class="eyebrow">Search and filter</p><h2>Prompt and skill records</h2></div><p id="result-count" class="result-count"></p></div>' + workflowChoiceBlurb("library") + oneTimeSkillSetup() + '<p class="filter-description">Search includes titles, skill names and descriptions, categories, use cases, prerequisites, prompt text, expected output, additional instructions, and creator details.</p><div class="filters"><label><span>Search</span><input id="search" type="search" placeholder="Search the prompt and skill library"></label><label><span>Category</span><select id="category"><option value="">All categories</option>' + categoriesOptions + '</select></label><label><span>Creator</span><select id="creator"><option value="">All creators</option>' + creatorOptions + '</select></label><label><span>Sort</span><select id="sort"><option value="title">Title, A to Z</option><option value="newest" selected>Newest first</option></select></label><button id="clear-filters" class="button button-secondary clear-filters">Clear filters</button></div><div class="table-wrap"><table class="prompt-table prompt-overview"><thead><tr><th>Workflow</th><th>Codex skill</th><th>Category</th><th>Creator</th><th>Updated</th><th><span class="sr-only">View details</span></th></tr></thead><tbody id="prompt-list"></tbody></table></div></div></section>');
+  bindInlineCopyButtons();
 
   const dismissNotice = document.querySelector("#dismiss-submission-notice");
   if (dismissNotice) dismissNotice.addEventListener("click", () => {
@@ -487,17 +503,7 @@ function prompt(record) {
       }
     }));
   }
-  document.querySelectorAll(".inline-copy-button[data-copy-text]").forEach((button) => button.addEventListener("click", async () => {
-    const originalText = "Copy";
-    try {
-      await copyText(button.dataset.copyText || "");
-      button.textContent = "Copied";
-      window.setTimeout(() => { button.textContent = originalText; }, 1800);
-    } catch {
-      button.textContent = "Failed";
-      window.setTimeout(() => { button.textContent = originalText; }, 1800);
-    }
-  }));
+  bindInlineCopyButtons();
 }
 
 function input(label, key, value, rows, description, options = {}) {

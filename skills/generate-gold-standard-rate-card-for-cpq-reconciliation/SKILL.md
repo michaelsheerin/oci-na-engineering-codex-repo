@@ -11,7 +11,7 @@ Use this skill when the user's request matches the skill description. Follow the
 
 Before executing this workflow, check whether every required input below already has a clear value in the user's request or the current conversation.
 
-If one or more values are missing, call `strategic_install_required_input_form.collect_required_inputs` once with only the entries below that are still missing. Preserve each label and required setting:
+If one or more required values are missing and `strategic_install_required_input_form.collect_required_inputs` is available, call it once with only the entries below that are still missing. Preserve each label and required setting:
 
 ```json
 {
@@ -33,7 +33,16 @@ If one or more values are missing, call `strategic_install_required_input_form.c
 }
 ```
 
-Tell the user the form collects the values needed for this workflow. After a successful submission, use the returned values as the workflow inputs and continue. If the user cancels, declines, or leaves a required field blank, do not execute the workflow. Explain which value is still needed.
+If the form tool is unavailable, ask the user for each missing required value in chat. Use the same label names and leave the value blank after each equals sign. Omit entries whose values are already clear:
+
+```text
+Inputs:
+
+- CPQ Link of Previously Validated Rate Card =
+- File Path of CSV Extract from SPA Rate Card =
+```
+
+Tell the user the form or chat prompt collects the values needed for this workflow. After a successful form submission or a chat reply with every required value, use those values as the workflow inputs and continue. If the user cancels, declines, or leaves a required value blank, do not execute the workflow. Explain which value is still needed.
 
 ## Purpose and use case
 
