@@ -9,7 +9,9 @@ Use this skill when the user's request matches the skill description. Follow the
 
 ## Purpose and use case
 
-This prompt establishes a local Gold Standard Rate Card from a previously validated CPQ quote. This approved CPQ baseline creates a consistent reference point for reconciliation analysis of future CPQ quotes. In large accounts with many ODs, Addendums, custom-SKUs or contract language, SPA/SPM/CPQ c
+This prompt establishes a local Gold Standard Rate Card from a previously validated CPQ quote. This approved CPQ baseline creates a consistent reference point for reconciliation analysis of future CPQ quotes. In large accounts with many ODs, Addendums, custom-SKUs or contract language, SPA/SPM/CPQ can often and repeatedly produce Net Unit Price/Selling Price errors. This prompt produces a local standard that is isolated from these computing errors. 
+
+The prompt also compares the CPQ standard to SPA Rate Card if additional manual validation is needed.
 
 ## Prerequisites
 
