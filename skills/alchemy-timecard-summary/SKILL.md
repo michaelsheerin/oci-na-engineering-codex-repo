@@ -43,8 +43,17 @@ Build one responsive dashboard with:
   - Daily: latest 7 days, latest 14 days, or all periods
   - Weekly: latest 4 weeks, latest 8 weeks, or all periods
   - Monthly: latest 4 months, latest 8 months, or all periods
-- Summary metrics for total hours, number of customers shown, and largest selected period
+- Summary metrics for total hours and number of customers shown
 - One stacked bar chart showing hours by customer across the selected periods
+
+Daily view requirements:
+- Label each day with its weekday and date, such as `Mon, Aug 18`.
+- Include the weekday in hover labels and accessible descriptions.
+
+Time-sensitive summary metric:
+- In daily and monthly views, show the largest selected period and its hours.
+- In weekly view, replace “Largest period” with “Latest week.”
+- “Latest week” must show the total hours in the most recent displayed week and label that week’s date range. Do not use the highest-hour week for this metric.
 
 Default state:
 - All customers
