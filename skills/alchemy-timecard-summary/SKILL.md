@@ -22,24 +22,34 @@ A way to summarize your hours logged in Alchemy by week and month, and broken do
 ## Workflow instructions
 
 ```text
-Create a local, standalone “Customer Hours Dashboard” from Alchemy CSV exports.
-Requirements:
-- Package it as files that can be opened locally without a server or installation.
-- Include an index.html with all required HTML, CSS, and JavaScript, plus a short README.
-- Let the user choose a CSV file from their computer with a file picker; process it entirely locally, with no upload.
-- Expect CSV columns: Customer Name, Day Submitted (MM/DD/YYYY), and Hours.
-- Show:
-  - Total logged hours
-  - Number of customers shown
-  - Largest time period by hours
-  - A stacked bar chart of hours by customer
-- Provide controls for:
-  - All customers or one selected customer
-  - Monthly or weekly grouping
-  - Latest 4 periods, latest 8 periods, or all periods
-- Default to monthly and latest 4 months; update the range labels to “weeks” when Weekly is selected.
-- Make it responsive, readable, and accessible. Use a simple professional dashboard style with chart hover labels for customer, period, and hours.
-- Include clear validation messages when the CSV lacks required columns or has no usable rows.
+When the user provides an Alchemy CSV export and asks to review hours, process the supplied file during the current run and return an inline interactive dashboard in the conversation.
+
+Do not create a separate application, local web server, file-picker workflow, or standalone website unless explicitly requested.
+
+Required CSV columns:
+- Customer Name
+- Day Submitted (`MM/DD/YYYY`)
+- Hours
+
+Optional:
+- Activity, for contextual breakdowns if useful.
+
+Build one responsive dashboard with:
+- Customer filter: all customers or one customer
+- Time grouping: monthly or weekly
+- Visible range: latest 4 periods, latest 8 periods, or all periods
+  - Use “months” labels for monthly mode and “weeks” labels for weekly mode
+- Summary metrics for total hours, number of customers shown, and largest selected period
+- One stacked bar chart showing hours by customer across the selected periods
+
+Default state:
+- All customers
+- Monthly grouping
+- Latest 4 months
+
+Parse and aggregate the CSV during the run. Keep the source file unchanged. If required columns are missing or no usable records remain, clearly explain the issue rather than guessing.
+
+Deliver the dashboard as an inline visualization in the current conversation, followed by a brief plain-language summary of the relevant customer-hours comparison.
 ```
 
 ## Expected output
