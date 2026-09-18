@@ -1,19 +1,36 @@
 # Generate a Weekly Dedicated-Pool Capacity Report
 
-## Use case and purpose
+## Purpose and use case
 
 Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. It queries live Compute Admin inventory, validates Global-AD and Tenant-AD mappings from authoritative metadata, produces one current-date CSV per Global-AD, and builds a consolidated Excel workbook with Hypervisors and Summary tabs.
 
 Run this prompt when the report needs current dedicated-pool capacity data, shape-level OCPU and memory calculations, and an optional standard VM capacity view. It does not modify source inventory or prior-date report files.
 
+## Codex skill
+
+- Skill name: `generate-a-weekly-dedicated-pool-capacity-report`
+- Skill description: Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. It queries live Compute Admin inventory, validates Global-AD and Tenant-AD mappings from authoritative metadata, produces one current-date CSV per Global-AD, and builds a
+- Skill file: `skills/generate-a-weekly-dedicated-pool-capacity-report/SKILL.md`
+
+## Prerequisites
+
+| Prerequisite |
+| --- |
+| Customer in Dedicated Pool |
+| C4PO Access and MCP Server Configuration (see link) |
+
+Prerequisite link: [Open instructions](https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fdedicated-pool-capacity-report.md)
+
 ## Required inputs
 
-- Customer or report label
-- Exact pool name
-- One or more region and availability-domain targets
-- One or more exact Hypervisor shapes
-- Optional standard VM shape and positive OCPU count
-- Output directory
+| Required input |
+| --- |
+| Customer or report label |
+| Exact pool name |
+| One or more region and availability-domain targets |
+| One or more exact Hypervisor shapes |
+| Optional standard VM shape and positive OCPU count |
+| Output directory (optional) |
 
 ## Expected output and next steps
 
@@ -21,7 +38,7 @@ Current-date CSV files by Global-AD and a consolidated Excel capacity workbook w
 
 Review the validation report and resolve inventory or authoritative-mapping errors before using the report.
 
-## Additional instructions and notes
+## Additional Instructions and Post-Run Notes
 
 Requires Compute Admin MCP access and an authorized SharePoint Excel write capability. The prompt stops before writing files when authoritative mapping is unavailable and does not write a partial report.
 
@@ -300,19 +317,25 @@ Submitted directly from the Prompt Library.
 | Field | Value |
 | --- | --- |
 | Category | data-reporting |
-| Submitted | 2026-09-03 |
+| Submitted | 2026-09-18 |
 
 <!-- prompt-metadata
 title: "Generate a Weekly Dedicated-Pool Capacity Report"
 description: "Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. It queries live Compute Admin inventory, validates Global-AD and Tenant-AD mappings from authoritative metadat"
 category: "data-reporting"
 tags: []
-required_inputs: "- Customer or report label\n- Exact pool name\n- One or more region and availability-domain targets\n- One or more exact Hypervisor shapes\n- Optional standard VM shape and positive OCPU count\n- Output directory"
+required_inputs: ["Customer or report label","Exact pool name","One or more region and availability-domain targets","One or more exact Hypervisor shapes","Optional standard VM shape and positive OCPU count","Output directory (optional)"]
 expected_output: "Current-date CSV files by Global-AD and a consolidated Excel capacity workbook with Hypervisors and Summary tabs.\n\nReview the validation report and resolve inventory or authoritative-mapping errors before using the report."
 next_steps: ""
 additional_instructions_notes: "Requires Compute Admin MCP access and an authorized SharePoint Excel write capability. The prompt stops before writing files when authoritative mapping is unavailable and does not write a partial report."
+additional_instructions_link: ""
+skill_name: "generate-a-weekly-dedicated-pool-capacity-report"
+skill_description: "Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. It queries live Compute Admin inventory, validates Global-AD and Tenant-AD mappings from authoritative metadata, produces one current-date CSV per Global-AD, and builds a"
+skill_path: "skills/generate-a-weekly-dedicated-pool-capacity-report/SKILL.md"
+prerequisites: ["Customer in Dedicated Pool","C4PO Access and MCP Server Configuration (see link)"]
+prerequisite_link: "https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fdedicated-pool-capacity-report.md"
 contact_name: "Michael Sheerin"
 contact_email: "michael.sheerin@oracle.com"
 source_issue: ""
-last_reviewed: "2026-09-03"
+last_reviewed: "2026-09-18"
 -->

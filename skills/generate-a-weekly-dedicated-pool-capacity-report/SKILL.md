@@ -1,15 +1,24 @@
 ---
 name: generate-a-weekly-dedicated-pool-capacity-report
-description: "Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. It queries live Compute Admin inventory, validates Global-AD and Tenant-AD mappings from authoritative metadat"
+description: "Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. It queries live Compute Admin inventory, validates Global-AD and Tenant-AD mappings from authoritative metadata, produces one current-date CSV per Global-AD, and builds a"
 ---
 
 # Generate a Weekly Dedicated-Pool Capacity Report
 
 Use this skill when the user's request matches the skill description. Follow the user's direct instructions when they conflict with this workflow. Before running the workflow, confirm that every Required input has a value. If a value is missing, ask the user for it before continuing. Users may provide values as `- Input name = value`.
 
+## Purpose and use case
+
+Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. It queries live Compute Admin inventory, validates Global-AD and Tenant-AD mappings from authoritative metadata, produces one current-date CSV per Global-AD, and builds a consolidated Excel workbook with Hypervisors and Summary tabs.
+
+Run this prompt when the report needs current dedicated-pool capacity data, shape-level OCPU and memory calculations, and an optional standard VM capacity view. It does not modify source inventory or prior-date report files.
+
 ## Prerequisites
 
-None provided.
+- Customer in Dedicated Pool
+- C4PO Access and MCP Server Configuration (see link)
+
+Prerequisite link: [Open instructions](https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fdedicated-pool-capacity-report.md)
 
 ## Required inputs
 
@@ -18,7 +27,7 @@ None provided.
 - One or more region and availability-domain targets
 - One or more exact Hypervisor shapes
 - Optional standard VM shape and positive OCPU count
-- Output directory
+- Output directory (optional)
 
 ## Workflow instructions
 
@@ -287,6 +296,6 @@ Current-date CSV files by Global-AD and a consolidated Excel capacity workbook w
 
 Review the validation report and resolve inventory or authoritative-mapping errors before using the report.
 
-## Additional instructions and boundaries
+## Additional Instructions and Post-Run Notes
 
 Requires Compute Admin MCP access and an authorized SharePoint Excel write capability. The prompt stops before writing files when authoritative mapping is unavailable and does not write a partial report.
