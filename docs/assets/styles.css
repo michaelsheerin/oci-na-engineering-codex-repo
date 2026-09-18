@@ -289,6 +289,8 @@ input:focus, select:focus { outline: 3px solid rgba(189, 44, 44, .18); border-co
 .skill-install-steps { display: grid; gap: 10px; margin: 0; padding-left: 24px; }
 .skill-install-steps li::marker { color: var(--accent); font-weight: 760; }
 .skill-install-steps ol { display: grid; gap: 7px; margin: 10px 0 0; padding-left: 22px; }
+.skill-install-substeps { display: grid; gap: 5px; margin: 8px 0 0; padding-left: 20px; }
+.skill-install-substeps li::marker { color: var(--muted); }
 .skill-install-unavailable { border-color: var(--line); background: var(--surface); }
 .skill-status { display: block; margin-top: 5px; color: var(--muted); font-size: .74rem; }
 .skill-cell code { color: var(--accent-dark); font-size: .86rem; }

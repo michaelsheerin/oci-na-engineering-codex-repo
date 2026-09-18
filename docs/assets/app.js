@@ -276,8 +276,8 @@ function requiredInputsTable(value) {
   return workflowItemsTable(value, "Required input", "No required inputs provided.", "required-inputs-table");
 }
 
-function prerequisitesTable(value) {
-  return workflowItemsTable(value, "Prerequisite", "No prerequisites provided.", "prerequisites-table");
+function prerequisitesTable(value, heading = "Prerequisite") {
+  return workflowItemsTable(value, heading, "No prerequisites provided.", "prerequisites-table");
 }
 
 function requiredInputsTemplate(value) {
@@ -401,6 +401,7 @@ function prompt(record) {
   const inputs = requiredInputsTable(record.requiredInputs);
   const inputsTemplate = requiredInputsTemplate(record.requiredInputs);
   const prerequisites = prerequisitesTable(record.prerequisites);
+  const skillPrerequisites = prerequisitesTable(record.prerequisites, "Prompt Prerequisites");
   const headerDescription = record.useCase || record.description || "Reusable prompt record.";
   const source = record.sourceIssue ? '<a href="' + escapeHtml(record.sourceIssue) + '" target="_blank" rel="noreferrer">Original form submission</a>' : "Not provided.";
   const markdownRecordUrl = repositoryUrl + "/blob/main/" + record.path.split("/").map(encodeURIComponent).join("/");
@@ -409,15 +410,20 @@ function prompt(record) {
   const section = (heading, description, content) => '<section><h2>' + heading + '</h2>' + (description ? '<p class="field-description record-field-description">' + description + "</p>" : "") + content + "</section>";
   const paragraph = (value) => formattedContent(value);
   const promptText = record.promptText || "";
+  const inputCopyDisabled = inputsTemplate ? "" : " disabled";
+  const requiredInputsCopyControl = '<button id="copy-inputs" class="button button-secondary button-small copy-inputs-button" type="button" data-default-label="Copy input text"' + inputCopyDisabled + '>Copy input text</button>';
+  const requiredInputsInlineCopyControl = '<button class="inline-copy-button copy-inputs-button" type="button" data-default-label="Copy"' + inputCopyDisabled + '>Copy</button>';
   const promptSection = '<section><div class="prompt-heading"><div><h2>Copy prompt text</h2><p class="section-description">Copy this text when you want to run the workflow once in your current Codex chat. It does not save the workflow for later.</p></div><button id="copy-prompt" class="button button-secondary button-small" type="button"' + (promptText ? "" : " disabled") + '>Copy prompt</button></div><p id="copy-prompt-status" class="copy-prompt-status" aria-live="polite"></p><pre><code>' + escapeHtml(promptText || "No prompt text provided.") + "</code></pre></section>";
-  const requiredInputsSection = '<section><div class="prompt-heading"><div><h2>Required inputs</h2><p class="field-description record-field-description">Files, links, context, or values needed before the workflow runs. The copyable template leaves a blank value after each equals sign for use with a downloaded skill.</p></div></div>' + inputs + '<div class="required-input-actions"><button id="copy-inputs" class="button button-secondary button-small" type="button"' + (inputsTemplate ? "" : " disabled") + '>Copy input text</button><p id="copy-inputs-status" class="copy-prompt-status" aria-live="polite"></p></div></section>';
+  const requiredInputsSection = '<section><div class="prompt-heading"><div><h2>Required inputs</h2><p class="field-description record-field-description">Files, links, context, or values needed before the workflow runs. The copyable template leaves a blank value after each equals sign for use with a downloaded skill.</p></div></div>' + inputs + '<div class="required-input-actions">' + requiredInputsCopyControl + '<p id="copy-inputs-status" class="copy-prompt-status" aria-live="polite"></p></div></section>';
   const prerequisiteLink = record.prerequisiteLink ? '<p class="record-reference-link"><a href="' + escapeHtml(record.prerequisiteLink) + '" target="_blank" rel="noreferrer">Open prerequisite link</a></p>' : "";
   const skillDetails = '<dl class="definition-list"><div><dt>Skill name</dt><dd><code>$' + escapeHtml(skillName) + '</code></dd></div><div><dt>Purpose and use case</dt><dd>' + escapeHtml(record.skillDescription || headerDescription) + "</dd></div></dl>";
-  const skillFolderPrerequisite = '<p class="skill-folder-prerequisite"><strong>Prerequisite:</strong> Create a local skills folder once before installing your first skill. Replace <code>&lt;username&gt;</code> with your account folder name under <code>C:\\Users</code> on Windows, or your macOS home-folder name. Windows: <code>C:\\Users\\&lt;username&gt;\\.agents\\skills\\</code> Mac: <code>/Users/&lt;username&gt;/.agents/skills/</code></p>';
+  const skillFolderPrerequisite = '<p class="skill-folder-prerequisite"><strong>One-Time Skills Directory Prerequisite:</strong> Before you install or run your first Codex skill, create this local skills directory once on your computer. Every skill uses this same directory. Replace <code>&lt;username&gt;</code> with your Windows account folder name or macOS home-folder name. Windows: <code>C:\\Users\\&lt;username&gt;\\.agents\\skills\\</code> Mac: <code>/Users/&lt;username&gt;/.agents/skills/</code></p>';
   const skillFolderCopy = '<code>' + escapeHtml(skillName) + '</code><button class="inline-copy-button" type="button" data-copy-text="' + escapeHtml(skillName) + '" aria-label="Copy subfolder name ' + escapeHtml(skillName) + '" title="Copy subfolder name">Copy</button>';
   const skillInvocation = "$" + skillName;
   const skillInvocationCopy = '<code>' + escapeHtml(skillInvocation) + '</code><button class="inline-copy-button" type="button" data-copy-text="' + escapeHtml(skillInvocation) + '" aria-label="Copy skill invocation ' + escapeHtml(skillInvocation) + '" title="Copy skill invocation">Copy</button>';
-  const skillSection = skillAvailable ? '<section class="skill-install"><div class="skill-install-heading"><div><p class="eyebrow">Codex skill</p><h2>Download and install this skill</h2><p>A skill keeps this workflow available across future Codex work. Download the file, then place it in your local Codex skills folder.</p></div><button id="download-skill" class="button" type="button">Download SKILL.md</button></div>' + skillDetails + '<div class="skill-prerequisites">' + prerequisites + prerequisiteLink + '</div>' + skillFolderPrerequisite + '<ol class="skill-install-steps"><li>Inside the skills folder above, create a subfolder named ' + skillFolderCopy + '.</li><li>Download <code>SKILL.md</code> and save it inside that subfolder as <code>SKILL.md</code>.</li><li>Open a new Codex task and type ' + skillInvocationCopy + '.</li><li><strong>Required Inputs</strong><ol><li>Copy the <strong>Required Inputs</strong> template below and paste it into the Codex chat below the skill name.</li><li>Enter values for your specific customer or use case after each equals sign.</li><li>Instruct Codex to execute the skill.</li></ol></li></ol><p id="download-skill-status" class="copy-prompt-status" aria-live="polite"></p></section>' : '<section class="skill-install skill-install-unavailable"><p class="eyebrow">Codex skill</p><h2>Skill download unavailable</h2><p>This legacy record has prompt text only. Its skill file has not been generated yet.</p></section>';
+  const skillDownloadControl = '<button class="button download-skill-button" type="button" data-default-label="Download SKILL.md">Download SKILL.md</button>';
+  const skillInlineDownloadControl = '<button class="inline-copy-button download-skill-button" type="button" data-default-label="Download">Download</button>';
+  const skillSection = skillAvailable ? '<section class="skill-install"><div class="skill-install-heading"><div><p class="eyebrow">Codex skill</p><h2>Download and install this skill</h2><p>A skill keeps this workflow available across future Codex work. Download the file, then place it in your local Codex skills folder.</p></div>' + skillDownloadControl + '</div>' + skillDetails + skillFolderPrerequisite + '<div class="skill-prerequisites">' + skillPrerequisites + prerequisiteLink + '</div><ol class="skill-install-steps"><li>Inside the skills folder above, create a subfolder:<ul class="skill-install-substeps"><li>' + skillFolderCopy + '</li></ul></li><li>Download <code>SKILL.md</code>' + skillInlineDownloadControl + ' and save it inside that subfolder as <code>SKILL.md</code>.</li><li>Open a new Codex task and type:<ul class="skill-install-substeps"><li>' + skillInvocationCopy + '</li></ul></li><li><strong>Required Inputs</strong>' + requiredInputsInlineCopyControl + '<ol><li>Use the Copy button above to copy the <strong>Required Inputs</strong>, or review the Required Inputs section below. Paste the completed inputs into the Codex chat below the skill name.</li><li>Enter values for your specific customer or use case after each equals sign.</li><li>Instruct Codex to execute the skill.</li></ol></li></ol><p id="download-skill-status" class="copy-prompt-status" aria-live="polite"></p></section>' : '<section class="skill-install skill-install-unavailable"><p class="eyebrow">Codex skill</p><h2>Skill download unavailable</h2><p>This legacy record has prompt text only. Its skill file has not been generated yet.</p></section>';
   const details = '<div class="detail-table"><table><tbody><tr><th>Category</th><td>' + name(record.category) + '</td></tr><tr><th>Last updated</th><td>' + escapeHtml(record.lastReviewed || "Not provided") + '</td></tr><tr><th>Markdown record</th><td><a href="' + escapeHtml(markdownRecordUrl) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.path) + "</code></a></td></tr>" + (skillAvailable ? '<tr><th>Skill file</th><td><a href="' + escapeHtml(repositoryUrl + "/blob/main/" + record.skillPath.split("/").map(encodeURIComponent).join("/")) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.skillPath) + "</code></a></td></tr>" : "") + "</tbody></table></div>";
   const additionalNotes = [record.additionalInstructionsNotes, record.postExecutionSteps || record.nextSteps].filter(Boolean).join("\n\n");
   const additionalLink = record.additionalNotesLink || record.postExecutionLink;
@@ -446,33 +452,33 @@ function prompt(record) {
       }
     });
   }
-  const copyInputsButton = document.querySelector("#copy-inputs");
+  const copyInputsButtons = [...document.querySelectorAll(".copy-inputs-button")];
   const copyInputsStatus = document.querySelector("#copy-inputs-status");
-  if (copyInputsButton && inputsTemplate) {
-    copyInputsButton.addEventListener("click", async () => {
+  if (copyInputsButtons.length && inputsTemplate) {
+    copyInputsButtons.forEach((copyInputsButton) => copyInputsButton.addEventListener("click", async () => {
       try {
         await copyText(inputsTemplate);
-        copyInputsButton.textContent = "Copied";
+        copyInputsButtons.forEach((button) => { button.textContent = "Copied"; });
         copyInputsStatus.textContent = "Input template copied. Enter the values for this task after each equals sign.";
-        window.setTimeout(() => { copyInputsButton.textContent = "Copy input text"; }, 1800);
+        window.setTimeout(() => { copyInputsButtons.forEach((button) => { button.textContent = button.dataset.defaultLabel || "Copy"; }); }, 1800);
       } catch {
         copyInputsStatus.textContent = "Copy failed. Copy the required-input labels from the table and add the customer-specific values manually.";
       }
-    });
+    }));
   }
-  const downloadButton = document.querySelector("#download-skill");
+  const downloadButtons = [...document.querySelectorAll(".download-skill-button")];
   const downloadStatus = document.querySelector("#download-skill-status");
-  if (downloadButton && skillAvailable) {
-    downloadButton.addEventListener("click", async () => {
+  if (downloadButtons.length && skillAvailable) {
+    downloadButtons.forEach((downloadButton) => downloadButton.addEventListener("click", async () => {
       try {
         await downloadSkill(record);
-        downloadButton.textContent = "Downloaded";
+        downloadButtons.forEach((button) => { button.textContent = "Downloaded"; });
         downloadStatus.textContent = "Save the downloaded file as ~/.agents/skills/" + skillName + "/SKILL.md, then open a new Codex task and type $" + skillName + ".";
-        window.setTimeout(() => { downloadButton.textContent = "Download SKILL.md"; }, 1800);
+        window.setTimeout(() => { downloadButtons.forEach((button) => { button.textContent = button.dataset.defaultLabel || "Download"; }); }, 1800);
       } catch (error) {
         downloadStatus.textContent = error.message || "Download failed. Open the skill file from Record details instead.";
       }
-    });
+    }));
   }
   document.querySelectorAll(".inline-copy-button").forEach((button) => button.addEventListener("click", async () => {
     const originalText = "Copy";
