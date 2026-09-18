@@ -480,7 +480,7 @@ function prompt(record) {
       }
     }));
   }
-  document.querySelectorAll(".inline-copy-button").forEach((button) => button.addEventListener("click", async () => {
+  document.querySelectorAll(".inline-copy-button[data-copy-text]").forEach((button) => button.addEventListener("click", async () => {
     const originalText = "Copy";
     try {
       await copyText(button.dataset.copyText || "");
