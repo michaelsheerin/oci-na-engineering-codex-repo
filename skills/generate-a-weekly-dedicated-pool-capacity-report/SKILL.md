@@ -18,7 +18,7 @@ Run this prompt when the report needs current dedicated-pool capacity data, shap
 - Customer in Dedicated Pool
 - C4PO Access and MCP Server Configuration (see link)
 
-Prerequisite link: [Open instructions](https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fdedicated-pool-capacity-report.md)
+Prerequisite link: [Open instructions](https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fcodex-c4po-mcp-server-setup-mtlqxl90.md)
 
 ## Required inputs
 
