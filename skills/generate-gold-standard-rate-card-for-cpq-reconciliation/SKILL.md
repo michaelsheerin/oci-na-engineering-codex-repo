@@ -202,8 +202,7 @@ CPQ-Gold_to_SPA   Validation | Editable   comparison view. Includes SKU, Product
 ## Additional Instructions and Post-Run Notes
 
 Once complete, you will have a local Gold-Standard Rate Card to compare and reconcile future CPQ quotes. See the link below for the prompt to identify those discrepancies and provide reconciliation suggestions.
-If you want to validate this CPQ quote against the SPA Rate Card, see the last tab in the file for a list of SKUs with net unit price discrepancies. You must then manually assess (e.g. via ODs, Addendums, etc.) which net unit price is accurate and adjust the Gold-Standard tab accordingly.
 
-### test
+If you want to validate this CPQ quote against the SPA Rate Card, see the last tab in the file for a list of SKUs with net unit price discrepancies. You must then manually assess (e.g. via ODs, Addendums, etc.) which net unit price is accurate and adjust the Gold-Standard tab accordingly.
 
 Related instructions: [Open instructions](https://oci-strategic-install-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fprompt-2.md)
