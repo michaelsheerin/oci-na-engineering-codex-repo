@@ -265,6 +265,10 @@ input:focus, select:focus { outline: 3px solid rgba(189, 44, 44, .18); border-co
 .prompt-heading h2 { margin: 0; }
 .section-description { max-width: 630px; margin: 7px 0 0; font-size: .92rem; }
 .copy-prompt-status { min-height: 1.25rem; margin: 0 0 10px; font-size: .88rem; }
+.required-input-actions { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+.required-input-actions .copy-prompt-status { min-height: 0; margin: 0; }
+.record-reference-link { margin: 18px 0 0; }
+.record-reference-link a { color: #1268a3; font-weight: 760; text-underline-offset: 3px; }
 .skill-install { margin: 30px 0; padding: 40px 46px; border: 1px solid #d9c5c5; border-radius: 7px; background: #fffafa; }
 .record-content > section.skill-install { padding: 48px 60px; }
 .skill-install-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 30px; }
@@ -281,6 +285,7 @@ input:focus, select:focus { outline: 3px solid rgba(189, 44, 44, .18); border-co
 .skill-install code { padding: 2px 5px; border-radius: 3px; background: #f1e8e8; color: var(--ink); font-size: .9em; }
 .skill-install-steps { display: grid; gap: 10px; margin: 0; padding-left: 24px; }
 .skill-install-steps li::marker { color: var(--accent); font-weight: 760; }
+.skill-install-steps ol { display: grid; gap: 7px; margin: 10px 0 0; padding-left: 22px; }
 .skill-install-unavailable { border-color: var(--line); background: var(--surface); }
 .skill-status { display: block; margin-top: 5px; color: var(--muted); font-size: .74rem; }
 .skill-cell code { color: var(--accent-dark); font-size: .86rem; }
@@ -321,6 +326,7 @@ input:focus, select:focus { outline: 3px solid rgba(189, 44, 44, .18); border-co
 .text-button { padding: 0; border: 0; background: transparent; color: var(--accent-dark); font: inherit; font-size: .8rem; font-weight: 760; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .text-button:disabled { color: #9ba4ad; cursor: not-allowed; text-decoration: none; }
 .link-input-panel { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); }
+.link-input-panel[hidden] { display: none; }
 .list-items-field { min-width: 0; margin: 0; padding: 0; border: 0; }
 .list-items-field legend { padding: 0; color: var(--ink); font-size: .86rem; font-weight: 760; }
 .list-items-editor { display: grid; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); }
@@ -330,9 +336,12 @@ input:focus, select:focus { outline: 3px solid rgba(189, 44, 44, .18); border-co
 .list-items-editor td { padding: 5px 0; }
 .list-items-editor td:last-child { padding-left: 12px; text-align: right; }
 .list-items-editor .button-small { width: max-content; }
-.link-reveal { display: grid; justify-items: start; gap: 6px; margin-top: 2px; }
+.link-reveal { display: grid; justify-items: stretch; gap: 8px; margin-top: 4px; }
+.link-reveal-action { display: grid; justify-items: start; gap: 6px; }
 .link-reveal .field-description { color: var(--muted); font-size: .8rem; font-weight: 500; line-height: 1.4; }
 .link-input-label { display: grid; gap: 6px; color: var(--ink); font-size: .82rem; font-weight: 760; }
+.long-text-link-field { min-width: 0; margin: 0; padding: 0; border: 0; }
+.long-text-link-field legend { padding: 0; color: var(--ink); font-size: .86rem; font-weight: 760; }
 .required-label { color: var(--accent-dark); font-size: .7rem; letter-spacing: .04em; text-transform: uppercase; }
 .prompt-text-field { min-width: 0; margin: 0; padding: 0; border: 0; }
 .prompt-text-field legend { padding: 0; color: var(--ink); font-size: .86rem; font-weight: 760; }
@@ -368,6 +377,7 @@ textarea:focus { outline: 3px solid rgba(189, 44, 44, .18); border-color: var(--
   .record-layout, .document-section { padding-top: 38px; padding-bottom: 54px; }
   .record-actions, .form-actions { align-items: stretch; flex-direction: column; }
   .prompt-heading { align-items: flex-start; flex-direction: column; }
+  .required-input-actions { align-items: flex-start; flex-direction: column; }
   .skill-install-heading { align-items: stretch; flex-direction: column; }
   .record-content > section.skill-install { padding: 34px 30px; }
   .workflow-choice-blurb { grid-template-columns: 1fr; gap: 16px; }
