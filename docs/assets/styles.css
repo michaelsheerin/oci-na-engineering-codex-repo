@@ -278,6 +278,10 @@ input:focus, select:focus { outline: 3px solid rgba(189, 44, 44, .18); border-co
 .skill-install .definition-list { margin: 23px 0; }
 .skill-install .definition-list dd .rich-content { margin: 0; }
 .skill-install .definition-list dd .rich-content p { margin-bottom: 8px; }
+.one-time-skill-setup { margin: 0 0 28px; padding: 24px 26px; border: 1px solid #d9c5c5; border-radius: 7px; background: #fffafa; box-shadow: 0 3px 12px rgba(143, 31, 31, .05); }
+.one-time-skill-setup > h2 { margin: 0 0 18px; color: var(--ink); font-size: 1.25rem; line-height: 1.3; }
+.one-time-skill-setup .skill-folder-prerequisite { margin: 0 0 14px; }
+.one-time-skill-setup h3 { margin: 0 0 7px; color: var(--ink); font-size: 1rem; }
 .skill-folder-prerequisite { margin: 0 0 22px; padding: 16px 18px; border-left: 3px solid var(--accent); border-radius: 4px; background: rgba(255, 255, 255, .6); }
 .skill-folder-prerequisite > p { margin: 0 0 11px; }
 .skill-folder-prerequisite ol { display: grid; gap: 9px; margin: 0; padding-left: 24px; }
@@ -285,7 +289,12 @@ input:focus, select:focus { outline: 3px solid rgba(189, 44, 44, .18); border-co
 .skill-folder-prerequisite li::marker { color: var(--accent); font-weight: 760; }
 .skill-folder-prerequisite ul li::marker { color: var(--muted); }
 .skill-folder-prerequisite strong { color: var(--ink); }
+.skill-form-prerequisite { padding: 16px 18px; border-left: 3px solid #486f92; border-radius: 4px; background: rgba(239, 247, 253, .75); }
+.skill-form-prerequisite > p { margin: 0 0 10px; }
+.skill-form-prerequisite > p:last-child { margin-bottom: 0; }
+.skill-form-prerequisite a { color: #1268a3; font-weight: 760; text-underline-offset: 3px; }
 .skill-prerequisites .rich-table { max-width: none; margin: 18px 0 12px; }
+.skill-prerequisites > h3 { margin: 0; color: var(--ink); font-size: 1rem; }
 .skill-prerequisites > p { margin: 0 0 22px; }
 .skill-install code { padding: 2px 5px; border-radius: 3px; background: #f1e8e8; color: var(--ink); font-size: .9em; }
 .inline-copy-button { display: inline-block; min-height: 24px; margin-left: 6px; padding: 2px 7px; border: 1px solid #b9c2cb; border-radius: 3px; background: var(--white); color: var(--accent-dark); font: inherit; font-size: .71rem; font-weight: 760; line-height: 1.2; vertical-align: middle; cursor: pointer; }

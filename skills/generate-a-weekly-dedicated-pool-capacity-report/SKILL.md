@@ -5,7 +5,47 @@ description: "Use this prompt to create a current weekly capacity report for a d
 
 # Generate a Weekly Dedicated-Pool Capacity Report
 
-Use this skill when the user's request matches the skill description. Follow the user's direct instructions when they conflict with this workflow. Before running the workflow, confirm that every Required input has a value. If a value is missing, ask the user for it before continuing. Users may provide values as `- Input name = value`.
+Use this skill when the user's request matches the skill description. Follow the user's direct instructions when they conflict with this workflow.
+
+## Required input form
+
+Before executing this workflow, check whether every required input below already has a clear value in the user's request or the current conversation.
+
+If one or more values are missing, call `strategic_install_required_input_form.collect_required_inputs` once with only the entries below that are still missing. Preserve each label and required setting:
+
+```json
+{
+  "message": "Complete the required inputs before this skill continues.",
+  "inputs": [
+    {
+      "label": "Customer or report label (customer-name)",
+      "required": true
+    },
+    {
+      "label": "Exact pool name",
+      "required": true
+    },
+    {
+      "label": "One or more region and/or availability-domain targets (e.g. IAD, PHX)",
+      "required": true
+    },
+    {
+      "label": "One or more exact shape names (e.g. HV.Standard3.64)",
+      "required": true
+    },
+    {
+      "label": "Standard VM shape with OCPU and GB-Mem (optional)",
+      "required": false
+    },
+    {
+      "label": "Output directory (optional)",
+      "required": false
+    }
+  ]
+}
+```
+
+Tell the user the form collects the values needed for this workflow. After a successful submission, use the returned values as the workflow inputs and continue. If the user cancels, declines, or leaves a required field blank, do not execute the workflow. Explain which value is still needed.
 
 ## Purpose and use case
 

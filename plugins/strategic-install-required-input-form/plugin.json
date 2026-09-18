@@ -1,0 +1,26 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "strategic-install-required-input-form",
+  "version": "0.1.0",
+  "description": "Collect required Strategic Install skill inputs in a Codex form.",
+  "author": {
+    "name": "Michael Sheerin"
+  },
+  "homepage": "https://michaelsheerin.github.io/oci-strategic-install-codex-repo/",
+  "repository": "https://github.com/michaelsheerin/oci-strategic-install-codex-repo",
+  "keywords": ["strategic-install", "codex", "forms", "skills"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Strategic Install Required Input Form",
+        "shortDescription": "Collect skill inputs in a Codex form.",
+        "longDescription": "Shows non-sensitive required inputs in a Codex form before a Strategic Install skill starts. The service does not store submitted values.",
+        "developerName": "Michael Sheerin",
+        "category": "Productivity",
+        "capabilities": ["Interactive"],
+        "websiteURL": "https://michaelsheerin.github.io/oci-strategic-install-codex-repo/",
+        "defaultPrompt": "Use the Strategic Install Required Input Form to collect missing skill inputs."
+      }
+    }
+  }
+}
