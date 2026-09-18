@@ -22,11 +22,11 @@ Prerequisite link: [Open instructions](https://oci-strategic-install-prompt-libr
 
 ## Required inputs
 
-- Customer or report label
+- Customer or report label (customer-name)
 - Exact pool name
-- One or more region and availability-domain targets
-- One or more exact Hypervisor shapes
-- Optional standard VM shape and positive OCPU count
+- One or more region and/or availability-domain targets (e.g. IAD, PHX)
+- One or more exact shape names (e.g. HV.Standard3.64)
+- Standard VM shape with OCPU and GB-Mem (optional)
 - Output directory (optional)
 
 ## Workflow instructions

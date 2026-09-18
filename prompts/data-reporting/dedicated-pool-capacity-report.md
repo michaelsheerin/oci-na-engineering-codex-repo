@@ -25,11 +25,11 @@ Prerequisite link: [Open instructions](https://oci-strategic-install-prompt-libr
 
 | Required input |
 | --- |
-| Customer or report label |
+| Customer or report label (customer-name) |
 | Exact pool name |
-| One or more region and availability-domain targets |
-| One or more exact Hypervisor shapes |
-| Optional standard VM shape and positive OCPU count |
+| One or more region and/or availability-domain targets (e.g. IAD, PHX) |
+| One or more exact shape names (e.g. HV.Standard3.64) |
+| Standard VM shape with OCPU and GB-Mem (optional) |
 | Output directory (optional) |
 
 ## Expected output and next steps
@@ -324,7 +324,7 @@ title: "Generate a Weekly Dedicated-Pool Capacity Report"
 description: "Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. It queries live Compute Admin inventory, validates Global-AD and Tenant-AD mappings from authoritative metadat"
 category: "data-reporting"
 tags: []
-required_inputs: ["Customer or report label","Exact pool name","One or more region and availability-domain targets","One or more exact Hypervisor shapes","Optional standard VM shape and positive OCPU count","Output directory (optional)"]
+required_inputs: ["Customer or report label (customer-name)","Exact pool name","One or more region and/or availability-domain targets (e.g. IAD, PHX)","One or more exact shape names (e.g. HV.Standard3.64)","Standard VM shape with OCPU and GB-Mem (optional)","Output directory (optional)"]
 expected_output: "Current-date CSV files by Global-AD and a consolidated Excel capacity workbook with Hypervisors and Summary tabs.\n\nReview the validation report and resolve inventory or authoritative-mapping errors before using the report."
 next_steps: ""
 additional_instructions_notes: "Requires Compute Admin MCP access and an authorized SharePoint Excel write capability. The prompt stops before writing files when authoritative mapping is unavailable and does not write a partial report."
