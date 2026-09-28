@@ -26,7 +26,7 @@ Prerequisite link: [Open instructions](https://oci-na-engineering-prompt-library
 
 | Required input |
 | --- |
-| Path for Gold-Standard-Rate-Card file generated in the prerequisite prompt |
+| File Path for Gold-Standard-Rate-Card file generated in the prerequisite prompt |
 | CPQ Link to the current rate card requiring reconciliation |
 | Output folder (optional) |
 
@@ -65,7 +65,7 @@ gold-standard-rate-card | Local   copy of the approved gold-standard data. Zero 
 
 ## Additional Instructions and Post-Run Notes
 
-Once output is generated, the first tab will list all SKUs, product category, etc. with the correct Selling Price and Discount that needs to be inputted in CPQ to arrive at that Selling Price. The sales team needs to manually reconcile CPQ with the provided discount and target net price as produced in the output Excel.
+Once output is generated, the first tab will list all INCORRECT SKUs, product category, etc. with the correct Selling Price and Discount that needs to be inputted in CPQ to arrive at that Selling Price. The sales team needs to manually reconcile CPQ with the provided discount and target net price as produced in the output Excel.
 
 ## Prompt text
 
@@ -359,17 +359,17 @@ Submitted directly from the Prompt Library.
 | Field | Value |
 | --- | --- |
 | Category | data-reporting |
-| Submitted | 2026-09-18 |
+| Submitted | 2026-09-28 |
 
 <!-- prompt-metadata
 title: "CPQ Rate Card Reconciliation based on Gold-Standard-Rate-Card"
 description: "This prompt reconciles a newly generated CPQ rate card against the approved local Gold Standard Rate Card created in Prompt 'Generate Gold Standard Rate Card for CPQ Reconciliation'. This provides a repeatable validation process for future"
 category: "data-reporting"
 tags: []
-required_inputs: ["Path for Gold-Standard-Rate-Card file generated in the prerequisite prompt","CPQ Link to the current rate card requiring reconciliation","Output folder (optional)"]
+required_inputs: ["File Path for Gold-Standard-Rate-Card file generated in the prerequisite prompt","CPQ Link to the current rate card requiring reconciliation","Output folder (optional)"]
 expected_output: "<html xmlns:o=\"urn:schemas-microsoft-com:office:office\"\nxmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\"\nxmlns=\"http://www.w3.org/TR/REC-html40\">\n\n<head>\n\n<meta name=ProgId content=OneNote.File>\n<meta name=Generator content=\"Microsoft OneNote 15\">\n</head>\n\n<body lang=en-US style='font-family:Calibri;font-size:11.0pt'>\n<!--StartFragment-->\n\n<div style='direction:ltr'>\n\n\nExcel Tabs | Content\n-- | --\nCPQ-<CPQ_NUMBER>   reconciliation | Editable    reconciliation view containing original data from extracted CPQ rate card,    and:         Target Gold-Standard-Selling-Price that you will         reconcile to via manual edits in CPQ     The Difference in         Gold-Standard and current CPQ Selling Price (for reference only)     The target         Adjusted-Discount that you will apply manually in CPQ to reach the         target Gold-Standard-Selling-Price\nCPQ-<CPQ_NUMBER>_Rate-Card | Read-only   local extraction of the current CPQ rate card. Includes all extracted SKU   records, including zero-selling-price rows.\ngold-standard-rate-card | Local   copy of the approved gold-standard data. Zero Unit Selling Price records are   removed. Lookup Key combines SKU and Unit Qty/Range to support accurate   tiered-price matching.\n\n\n\n</div>\n\n<!--EndFragment-->\n</body>\n\n</html>"
 next_steps: ""
-additional_instructions_notes: "Once output is generated, the first tab will list all SKUs, product category, etc. with the correct Selling Price and Discount that needs to be inputted in CPQ to arrive at that Selling Price. The sales team needs to manually reconcile CPQ with the provided discount and target net price as produced in the output Excel."
+additional_instructions_notes: "Once output is generated, the first tab will list all INCORRECT SKUs, product category, etc. with the correct Selling Price and Discount that needs to be inputted in CPQ to arrive at that Selling Price. The sales team needs to manually reconcile CPQ with the provided discount and target net price as produced in the output Excel."
 additional_instructions_link: ""
 skill_name: "cpq-rate-card-reconciliation-based-on-gold-standard-rate-card"
 skill_description: "This prompt reconciles a newly generated CPQ rate card against the approved local Gold Standard Rate Card created in Prompt 'Generate Gold Standard Rate Card for CPQ Reconciliation'. This provides a repeatable validation process for future quotes and identifies whether the current CPQ Unit Selling"
@@ -379,5 +379,5 @@ prerequisite_link: "https://oci-na-engineering-prompt-library.msheerin01.workers
 contact_name: "Michael Sheerin"
 contact_email: "michael.sheerin@oracle.com"
 source_issue: ""
-last_reviewed: "2026-09-18"
+last_reviewed: "2026-09-28"
 -->

@@ -6,7 +6,6 @@ description: "This prompt reconciles a newly generated CPQ rate card against the
 # CPQ Rate Card Reconciliation based on Gold-Standard-Rate-Card
 
 Use this skill when the user's request matches the skill description. Follow the user's direct instructions when they conflict with this workflow.
-
 ## Required input form
 
 Before executing this workflow, check whether every required input below already has a clear value in the user's request or the current conversation.
@@ -18,7 +17,7 @@ If one or more required values are missing and `na_engineering_required_input_fo
   "message": "Complete the required inputs before this skill continues.",
   "inputs": [
     {
-      "label": "Path for Gold-Standard-Rate-Card file generated in the prerequisite prompt",
+      "label": "File Path for Gold-Standard-Rate-Card file generated in the prerequisite prompt",
       "required": true
     },
     {
@@ -38,11 +37,12 @@ If the form tool is unavailable, ask the user for each missing required value in
 ```text
 Inputs:
 
-- Path for Gold-Standard-Rate-Card file generated in the prerequisite prompt =
+- File Path for Gold-Standard-Rate-Card file generated in the prerequisite prompt =
 - CPQ Link to the current rate card requiring reconciliation =
 ```
 
 Tell the user the form or chat prompt collects the values needed for this workflow. After a successful form submission or a chat reply with every required value, use those values as the workflow inputs and continue. If the user cancels, declines, or leaves a required value blank, do not execute the workflow. Explain which value is still needed.
+
 
 ## Purpose and use case
 
@@ -60,7 +60,7 @@ Prerequisite link: [Open instructions](https://oci-na-engineering-prompt-library
 
 ## Required inputs
 
-- Path for Gold-Standard-Rate-Card file generated in the prerequisite prompt
+- File Path for Gold-Standard-Rate-Card file generated in the prerequisite prompt
 - CPQ Link to the current rate card requiring reconciliation
 - Output folder (optional)
 
@@ -377,4 +377,4 @@ gold-standard-rate-card | Local   copy of the approved gold-standard data. Zero 
 
 ## Additional Instructions and Post-Run Notes
 
-Once output is generated, the first tab will list all SKUs, product category, etc. with the correct Selling Price and Discount that needs to be inputted in CPQ to arrive at that Selling Price. The sales team needs to manually reconcile CPQ with the provided discount and target net price as produced in the output Excel.
+Once output is generated, the first tab will list all INCORRECT SKUs, product category, etc. with the correct Selling Price and Discount that needs to be inputted in CPQ to arrive at that Selling Price. The sales team needs to manually reconcile CPQ with the provided discount and target net price as produced in the output Excel.
