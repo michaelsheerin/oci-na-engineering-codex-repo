@@ -26,7 +26,7 @@ Prerequisite link: [Open instructions](https://dtcoac-orasenatdpltinfomgmt03-ia.
 
 ## Expected output and next steps
 
-A dashboard showing your hours logged in Alchemy by week or month and broken down by account.
+A dashboard, embedded in Codex, showing your hours logged in Alchemy by week or month and broken down by account.
 
 ## Additional Instructions and Post-Run Notes
 
@@ -94,7 +94,7 @@ Submitted directly from the Prompt Library.
 | Field | Value |
 | --- | --- |
 | Category | data-reporting |
-| Submitted | 2026-09-18 |
+| Submitted | 2026-09-28 |
 
 <!-- prompt-metadata
 title: "Alchemy Timecard Summary"
@@ -102,7 +102,7 @@ description: "A way to summarize your hours logged in Alchemy by week and month,
 category: "data-reporting"
 tags: []
 required_inputs: ["CSV download from Alchemy Analytics (Time Keeper Details -> Filter your name -> Export Activity Hour Log)"]
-expected_output: "A dashboard showing your hours logged in Alchemy by week or month and broken down by account."
+expected_output: "A dashboard, embedded in Codex, showing your hours logged in Alchemy by week or month and broken down by account."
 next_steps: ""
 additional_instructions_notes: "To export Alchemy Activity CSV, navigate to the Time Keeper Details tab, filter for your name under ECA Name, click Apply. \n\nThen navigate to the Activity Hour log table, click the three dots, and Export as CSV. Save in any target folder."
 additional_instructions_link: "https://dtcoac-orasenatdpltinfomgmt03-ia.analytics.ocp.oraclecloud.com/ui/dv/ui/project.jsp?pageid=visualAnalyzer&reportmode=full&reportpath=%2F%40Catalog%2Fshared%2FNA%20Alchemy%2FAlchemy%20Dashboards"
@@ -114,5 +114,5 @@ prerequisite_link: "https://dtcoac-orasenatdpltinfomgmt03-ia.analytics.ocp.oracl
 contact_name: "Nicholas Chin"
 contact_email: "nicholas.chin@oracle.com"
 source_issue: ""
-last_reviewed: "2026-09-18"
+last_reviewed: "2026-09-28"
 -->

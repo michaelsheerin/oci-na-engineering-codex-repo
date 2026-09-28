@@ -6,7 +6,6 @@ description: "A way to summarize your hours logged in Alchemy by week and month,
 # Alchemy Timecard Summary
 
 Use this skill when the user's request matches the skill description. Follow the user's direct instructions when they conflict with this workflow.
-
 ## Required input form
 
 Before executing this workflow, check whether every required input below already has a clear value in the user's request or the current conversation.
@@ -34,6 +33,7 @@ Inputs:
 ```
 
 Tell the user the form or chat prompt collects the values needed for this workflow. After a successful form submission or a chat reply with every required value, use those values as the workflow inputs and continue. If the user cancels, declines, or leaves a required value blank, do not execute the workflow. Explain which value is still needed.
+
 
 ## Purpose and use case
 
@@ -95,7 +95,7 @@ Deliver the dashboard as an inline visualization in the current conversation, fo
 
 ## Expected output
 
-A dashboard showing your hours logged in Alchemy by week or month and broken down by account.
+A dashboard, embedded in Codex, showing your hours logged in Alchemy by week or month and broken down by account.
 
 ## Additional Instructions and Post-Run Notes
 
