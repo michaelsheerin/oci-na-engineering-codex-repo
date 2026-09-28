@@ -1,12 +1,11 @@
 ---
 name: generate-a-weekly-dedicated-pool-capacity-report
-description: "Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. It queries live Compute Admin inventory, validates Global-AD and Tenant-AD mappings from authoritative metadata, produces one current-date CSV per Global-AD, and builds a"
+description: "Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. Run this prompt when the report needs current dedicated-pool capacity data, shape-level OCPU and memory calculations, and an optional standard VM capacity view. It does n"
 ---
 
 # Generate a Weekly Dedicated-Pool Capacity Report
 
 Use this skill when the user's request matches the skill description. Follow the user's direct instructions when they conflict with this workflow.
-
 ## Required input form
 
 Before executing this workflow, check whether every required input below already has a clear value in the user's request or the current conversation.
@@ -58,11 +57,10 @@ Inputs:
 
 Tell the user the form or chat prompt collects the values needed for this workflow. After a successful form submission or a chat reply with every required value, use those values as the workflow inputs and continue. If the user cancels, declines, or leaves a required value blank, do not execute the workflow. Explain which value is still needed.
 
+
 ## Purpose and use case
 
-Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. It queries live Compute Admin inventory, validates Global-AD and Tenant-AD mappings from authoritative metadata, produces one current-date CSV per Global-AD, and builds a consolidated Excel workbook with Hypervisors and Summary tabs.
-
-Run this prompt when the report needs current dedicated-pool capacity data, shape-level OCPU and memory calculations, and an optional standard VM capacity view. It does not modify source inventory or prior-date report files.
+Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. Run this prompt when the report needs current dedicated-pool capacity data, shape-level OCPU and memory calculations, and an optional standard VM capacity view. It does not modify source inventory or prior-date report files.
 
 ## Prerequisites
 
@@ -343,9 +341,7 @@ Final validation
 
 ## Expected output
 
-Current-date CSV files by Global-AD and a consolidated Excel capacity workbook with Hypervisors and Summary tabs.
-
-Review the validation report and resolve inventory or authoritative-mapping errors before using the report.
+Current-date CSV files by Global-AD and a consolidated Excel capacity workbook with a list of all pooled Hypervisors and Summary tab showing AD-level totals.
 
 ## Additional Instructions and Post-Run Notes
 
