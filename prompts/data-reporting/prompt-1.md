@@ -226,7 +226,7 @@ Submitted directly from the Prompt Library.
 | Field | Value |
 | --- | --- |
 | Category | data-reporting |
-| Submitted | 2026-09-18 |
+| Submitted | 2026-09-28 |
 
 <!-- prompt-metadata
 title: "Generate Gold Standard Rate Card for CPQ Reconciliation"
@@ -246,5 +246,5 @@ prerequisite_link: ""
 contact_name: "Michael Sheerin"
 contact_email: "michael.sheerin@oracle.com"
 source_issue: ""
-last_reviewed: "2026-09-18"
+last_reviewed: "2026-09-28"
 -->
