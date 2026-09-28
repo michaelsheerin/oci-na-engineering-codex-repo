@@ -8,9 +8,22 @@ description: "Use this prompt to create a current weekly capacity report for a d
 Use this skill when the user's request matches the skill description. Follow the user's direct instructions when they conflict with this workflow.
 ## Required input form
 
-Before executing this workflow, check whether every required input below already has a clear value in the user's request or the current conversation.
+When a user invokes this skill without the required CSV, open the embedded required-input form as the first task action.
 
-If one or more required values are missing and `na_engineering_required_input_form.collect_required_inputs` is available, call it once with only the entries below that are still missing. Preserve each label and required setting:
+When one or more declared required inputs are missing, open the embedded required-input form as the first task action.
+
+Before treating `na_engineering_required_input_form.collect_required_inputs` as unavailable, search the complete tool catalog, including deferred MCP tools, for:
+
+- `mcp__na_engineering_required_input_form__collect_required_inputs`
+- `collect_required_inputs`
+- `required_input_form`
+
+A missing entry from the initially visible tool list does not establish tool unavailability.
+
+If `mcp__na_engineering_required_input_form__collect_required_inputs` exists, invoke it immediately. Do not ask for required inputs in chat first.
+
+
+If one or more required values are missing, invoke `mcp__na_engineering_required_input_form__collect_required_inputs` immediately with only the entries below that are still missing. Preserve each label and required setting:
 
 ```json
 {
@@ -44,7 +57,10 @@ If one or more required values are missing and `na_engineering_required_input_fo
 }
 ```
 
-If the form tool is unavailable, ask the user for each missing required value in chat. Use the same label names and leave the value blank after each equals sign. Omit entries whose values are already clear:
+Use the chat prompt only after a complete deferred-tool search finds no embedded required-input form service.
+
+
+After that search finds no embedded required-input form service, post this chat prompt for the missing required values. Use the same label names, leave the value blank after each equals sign, and omit entries whose values are already clear:
 
 ```text
 Inputs:
@@ -55,19 +71,17 @@ Inputs:
 - One or more exact shape names (e.g. HV.Standard3.64) =
 ```
 
-Tell the user the form or chat prompt collects the values needed for this workflow. After a successful form submission or a chat reply with every required value, use those values as the workflow inputs and continue. If the user cancels, declines, or leaves a required value blank, do not execute the workflow. Explain which value is still needed.
+If the form returns unsubmitted, cancelled, or blank required values, do not continue and do not switch to chat collection. State that the embedded form needs submission, then stop.
 
+After a successful form submission or a chat reply with every required value, use those values as the workflow inputs and continue.
 
-## Purpose and use case
-
-Use this prompt to create a current weekly capacity report for a dedicated pool across selected regions and availability domains. Run this prompt when the report needs current dedicated-pool capacity data, shape-level OCPU and memory calculations, and an optional standard VM capacity view. It does not modify source inventory or prior-date report files.
 
 ## Prerequisites
 
 - Customer in Dedicated Pool
 - C4PO Access and MCP Server Configuration (see link)
 
-Prerequisite link: [Open instructions](https://oci-na-engineering-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fcodex-c4po-mcp-server-setup-mtlqxl90.md)
+Prerequisite link: https://oci-na-engineering-prompt-library.msheerin01.workers.dev/?view=prompt&prompt=prompts%2Fdata-reporting%2Fcodex-c4po-mcp-server-setup-mtlqxl90.md
 
 ## Required inputs
 

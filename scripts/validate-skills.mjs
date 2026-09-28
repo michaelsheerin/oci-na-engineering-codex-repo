@@ -8,6 +8,16 @@ const skillsRoot = path.join(repositoryRoot, "skills");
 const promptsRoot = path.join(repositoryRoot, "prompts");
 const errors = [];
 const files = [];
+const requiredInputFormRules = [
+  "When a user invokes this skill without the required CSV, open the embedded required-input form as the first task action.",
+  "Before treating `na_engineering_required_input_form.collect_required_inputs` as unavailable, search the complete tool catalog, including deferred MCP tools, for:",
+  "`mcp__na_engineering_required_input_form__collect_required_inputs`",
+  "A missing entry from the initially visible tool list does not establish tool unavailability.",
+  "If `mcp__na_engineering_required_input_form__collect_required_inputs` exists, invoke it immediately. Do not ask for required inputs in chat first.",
+  "If one or more required values are missing, invoke `mcp__na_engineering_required_input_form__collect_required_inputs` immediately with only the entries below that are still missing. Preserve each label and required setting:",
+  "Use the chat prompt only after a complete deferred-tool search finds no embedded required-input form service.",
+  "If the form returns unsubmitted, cancelled, or blank required values, do not continue and do not switch to chat collection. State that the embedded form needs submission, then stop.",
+];
 
 function visit(directory) {
   if (!fs.existsSync(directory)) return;
@@ -33,6 +43,9 @@ for (const filePath of files) {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(name || "")) errors.push(`${relativePath}: name must be lowercase and hyphen-separated.`);
   if (!description) errors.push(`${relativePath}: description is required.`);
   if (!/## Workflow instructions\n[\s\S]*?`{3,}text\n[\s\S]+?\n`{3,}/.test(content)) errors.push(`${relativePath}: Add complete workflow instructions in a text code block.`);
+  for (const rule of requiredInputFormRules) {
+    if (!content.includes(rule)) errors.push(`${relativePath}: Add the required embedded required-input form rule: ${rule}`);
+  }
 }
 
 function skillSlug(value) {
