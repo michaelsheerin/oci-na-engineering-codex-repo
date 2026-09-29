@@ -1,6 +1,6 @@
 ---
 name: alchemy-timecard-summary
-description: "A way to summarize your hours logged in Alchemy by week and month, and broken down by account."
+description: "A way to summarize your hours logged in Alchemy by week and month, and broken down by account. This prompt will auto-extract your reporter hours from Alchemy Analytics, and provide an in-app dashboard of your hours based on Quarter, Month, Week, Account, etc."
 ---
 
 # Alchemy Timecard Summary
@@ -30,7 +30,7 @@ If one or more required values are missing, invoke mcp__na_engineering_required_
   "message": "Complete the required inputs before this skill continues.",
   "inputs": [
     {
-      "label": "CSV download from Alchemy Analytics (Time Keeper Details -> Filter your name -> Export Activity Hour Log)",
+      "label": "Reporter Name",
       "required": true
     }
   ]
@@ -44,7 +44,7 @@ After that search finds no embedded required-input form service, post this chat 
 ```text
 Inputs:
 
-- CSV download from Alchemy Analytics (Time Keeper Details -> Filter your name -> Export Activity Hour Log) =
+- Reporter Name =
 ```
 
 If the form returns unsubmitted, cancelled, or blank required values, do not continue and do not switch to chat collection. State that the embedded form needs submission, then stop.
@@ -55,6 +55,7 @@ After a successful form submission or a chat reply with every required value, us
 ## Purpose and use case
 
 A way to summarize your hours logged in Alchemy by week and month, and broken down by account.
+This prompt will auto-extract your reporter hours from Alchemy Analytics, and provide an in-app dashboard of your hours based on Quarter, Month, Week, Account, etc.
 
 ## Prerequisites
 
@@ -64,18 +65,44 @@ Prerequisite link: [Open instructions](https://dtcoac-orasenatdpltinfomgmt03-ia.
 
 ## Required inputs
 
-- CSV download from Alchemy Analytics (Time Keeper Details -> Filter your name -> Export Activity Hour Log)
+- Reporter Name
 
 ## Workflow instructions
 
 ```text
-When the user provides an Alchemy CSV export and asks to review hours, process the supplied file during the current run and return an inline interactive dashboard in the conversation.
+When the user provides an ECA Name (or Reporter Name) and asks to review Alchemy hours, retrieve the matching Activity Hour Log CSV during the current run, then return an inline interactive dashboard in the conversation.
+
+Use this Alchemy dashboard:
+https://dtcoac-orasenatdpltinfomgmt03-ia.analytics.ocp.oraclecloud.com/ui/dv/ui/project.jsp?pageid=visualAnalyzer&reportmode=full&reportpath=%2F%40Catalog%2Fshared%2FNA%20Alchemy%2FAlchemy%20Dashboards
+
+Download workflow:
+
+1. Navigate to the Alchemy dashboard.
+2. Open the Time Keeper Details tab.
+3. Set the ECA Name filter to the user-provided name.
+4. Click Apply.
+5. Open the Menu above Activity Hour Log.
+6. Select Export, then CSV.
+7. Save the export as the active visual.
+8. Process the downloaded CSV during the current run.
+
+Use the existing authenticated browser session. If authentication blocks access, ask the user to complete sign-in before continuing.
+
+If the automated CSV export or download fails:
+
+1. State the failed step.
+2. Direct the user to manually open the dashboard link.
+3. Tell the user to open Time Keeper Details.
+4. Tell the user to filter ECA Name to the requested name and click Apply.
+5. Tell the user to open the Activity Hour Log Menu and select Export, then CSV.
+6. Tell the user to upload or attach the exported CSV in the conversation.
+7. Once the CSV is attached, process it during the current run without attempting another automated download unless the user requests one.
 
 Do not create a separate application, local web server, file-picker workflow, or standalone website unless explicitly requested.
 
 Required CSV columns:
 - Customer Name
-- Day Submitted (`MM/DD/YYYY`)
+- Day Submitted, formatted as MM/DD/YYYY
 - Hours
 
 Optional:
@@ -98,14 +125,15 @@ Daily view requirements:
 Time-sensitive summary metric:
 - In daily and monthly views, show the largest selected period and its hours.
 - In weekly view, replace “Largest period” with “Latest week.”
-- “Latest week” must show the total hours in the most recent displayed week and label that week’s date range. Do not use the highest-hour week for this metric.
+- “Latest week” must show total hours in the most recent displayed week and label that week’s date range.
+- Do not use the highest-hour week for the Latest week metric.
 
 Default state:
 - All customers
 - Monthly grouping
 - Latest 4 months
 
-Parse and aggregate the CSV during the run. Keep the source file unchanged. If required columns are missing or no usable records remain, clearly explain the issue rather than guessing.
+Parse and aggregate the downloaded or user-provided CSV during the run. Keep the source file unchanged. If required columns are missing or no usable records remain, clearly explain the issue rather than guessing.
 
 Deliver the dashboard as an inline visualization in the current conversation, followed by a brief plain-language summary of the relevant customer-hours comparison.
 ```
@@ -115,6 +143,8 @@ Deliver the dashboard as an inline visualization in the current conversation, fo
 A dashboard, embedded in Codex, showing your hours logged in Alchemy by week or month and broken down by account.
 
 ## Additional Instructions and Post-Run Notes
+
+If Codex fails to export the CSV from Alchemy Analytics, you can manually export and point Codex to the file.
 
 To export Alchemy Activity CSV, navigate to the Time Keeper Details tab, filter for your name under ECA Name, click Apply. 
 
