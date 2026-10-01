@@ -7,9 +7,12 @@ on:
       - "docs/**"
       - "prompts/**"
       - "skills/**"
+      - "skill-packages/**"
       - "scripts/build-catalog.mjs"
       - "scripts/build-prompt-index.mjs"
+      - "scripts/build-skills.mjs"
       - "scripts/prompt-metadata.mjs"
+      - "scripts/validate-skills.mjs"
       - "scripts/version-static-assets.mjs"
       - ".github/workflows/publish-prompt-library.yml"
   workflow_dispatch:
@@ -44,6 +47,8 @@ jobs:
         run: node scripts/build-prompt-index.mjs
       - name: Build catalog
         run: node scripts/build-catalog.mjs
+      - name: Validate Codex skills
+        run: node scripts/validate-skills.mjs
       - name: Version static assets
         run: node scripts/version-static-assets.mjs
       - name: Upload Pages artifact

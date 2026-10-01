@@ -8,7 +8,9 @@ Describe the problem this workflow solves, the intended audience, and when Codex
 
 - Skill name: `[lowercase-hyphenated-name]`
 - Skill description: `[State when Codex should use this workflow and the result it should produce.]`
-- Skill file: `skills/[lowercase-hyphenated-name]/SKILL.md`
+- Delivery: `generated` or `package`
+- Generated skill file: `skills/[lowercase-hyphenated-name]/SKILL.md`
+- Package file, when using package delivery: `skill-packages/[lowercase-hyphenated-name].zip`
 
 ## Prerequisites
 
@@ -36,6 +38,8 @@ Related instructions: [Optional link to a prompt, runbook, or documentation.]
 ```text
 [Paste the full reusable prompt here. Use placeholders such as [customer name], [time period], and [file path].]
 ```
+
+For package delivery, replace the generated-skill metadata with the package metadata. Commit `skill-packages/[lowercase-hyphenated-name].zip`, leave `skill_path` empty, and include exactly one top-level `[lowercase-hyphenated-name]/SKILL.md` file in the ZIP. The repository validates the ZIP contents and required embedded input-form rules.
 
 ## Contact
 
@@ -67,7 +71,13 @@ additional_instructions_notes: "[Optional context, constraints, pre-run guidance
 additional_instructions_link: ""
 skill_name: "[lowercase-hyphenated-name]"
 skill_description: "[State exactly when Codex should use this workflow.]"
+skill_delivery: "generated"
 skill_path: "skills/[lowercase-hyphenated-name]/SKILL.md"
+skill_package_path: ""
+skill_package_name: ""
+skill_package_size: 0
+skill_package_sha256: ""
+skill_package_contents: []
 prerequisites: "[Prerequisite work, access, or None.]"
 prerequisite_link: ""
 contact_name: "[Contributor name]"

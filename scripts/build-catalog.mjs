@@ -41,6 +41,7 @@ function skillSlug(value) {
 }
 
 function skillPath(metadata) {
+  if (metadata.skill_delivery === "package") return "";
   if (metadata.skill_path) return metadata.skill_path;
   const name = skillSlug(metadata.skill_name || metadata.title);
   const candidate = path.join(repositoryRoot, "skills", name, "SKILL.md");
@@ -64,7 +65,13 @@ const records = promptFiles(promptsRoot)
     additionalNotesLink: metadata.additional_instructions_link || metadata.post_execution_link || "",
     skillName: metadata.skill_name || (generatedSkillPath ? skillSlug(metadata.title) : ""),
     skillDescription: metadata.skill_description || (generatedSkillPath ? String(metadata.description || "").replace(/\s+/g, " ").trim().slice(0, 300) : ""),
+    skillDelivery: metadata.skill_delivery || (generatedSkillPath ? "generated" : ""),
     skillPath: generatedSkillPath,
+    skillPackagePath: metadata.skill_package_path || "",
+    skillPackageName: metadata.skill_package_name || "",
+    skillPackageSize: Number(metadata.skill_package_size) || 0,
+    skillPackageHash: metadata.skill_package_sha256 || "",
+    skillPackageContents: Array.isArray(metadata.skill_package_contents) ? metadata.skill_package_contents : [],
     prerequisites: workflowItems(metadata.prerequisites, section(body, "Prerequisites")),
     prerequisiteLink: metadata.prerequisite_link || "",
     postExecutionSteps: metadata.post_execution_steps || section(body, "After the prompt runs"),

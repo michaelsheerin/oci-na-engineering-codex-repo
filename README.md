@@ -2,7 +2,7 @@
 
 A shared library of proven Codex prompts and reusable skills for RAs supporting NA Engineering work.
 
-The library turns effective individual workflows into reusable team assets. Each form submission creates a reader-friendly prompt record and a paired `SKILL.md` file for Codex. The goal is faster, more consistent work without losing the context required for sound judgment.
+The library turns effective individual workflows into reusable team assets. Each form submission creates a reader-friendly prompt record and either a generated `SKILL.md` file or an uploaded skill package for Codex. The goal is faster, more consistent work without losing the context required for sound judgment.
 
 ## Start here
 
@@ -15,12 +15,12 @@ The library turns effective individual workflows into reusable team assets. Each
 
 1. Search the library by skill name, use case, category, or tag.
 2. Open the workflow record and confirm its prerequisites and required inputs fit your task.
-3. Copy the prompt for a one-time run, or download `SKILL.md` for continued Codex use.
+3. Copy the prompt for a one-time run when available, or download the linked skill file or package for continued Codex use.
 4. Review the result, complete the listed follow-up steps, and improve the record when you find a better approach.
 
 ## How the library is organized
 
-Each prompt record is a standalone Markdown file in `prompts/<category>/`. Each paired skill lives in `skills/<skill-name>/SKILL.md`. This keeps the content readable in GitHub, gives every workflow a permanent link, and preserves revision history.
+Each prompt record is a standalone Markdown file in `prompts/<category>/`. Generated skills live in `skills/<skill-name>/SKILL.md`. Uploaded skill packages live in `skill-packages/<skill-name>.zip` and contain the complete `<skill-name>/` folder. This keeps the content readable in GitHub, gives every workflow a permanent link, and preserves revision history.
 
 The public Browse prompts page supports full-text search, category filters, creator filters, sorting, and category counts. GitHub-native browsing uses the category folders, prompt record links, and GitHub code search. Submitters do not need to edit an index or understand the folder structure.
 
@@ -28,6 +28,7 @@ The public Browse prompts page supports full-text search, category filters, crea
 | --- | --- |
 | `prompts/` | Versioned prompt records |
 | `skills/` | Downloadable `SKILL.md` files for Codex |
+| `skill-packages/` | Downloadable ZIP packages with `SKILL.md` and supporting files |
 | `prompts/_template.md` | Standard record format for direct pull requests |
 | `docs/` | Searchable GitHub Pages catalog |
 | `scripts/` | Catalog generation and content validation |
@@ -42,7 +43,7 @@ Workflow records retain the details supplied in the form:
 2. Detailed use case and purpose
 3. Skill name and activation description
 4. Prerequisites and prerequisite link
-5. Prompt text and required inputs
+5. Generated prompt text or a skill package, plus required inputs
 6. Expected output, constraints, and follow-up steps
 7. Contributor name and email
 

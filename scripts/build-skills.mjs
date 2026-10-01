@@ -143,6 +143,7 @@ const records = promptFiles(promptsRoot).map(parsePrompt).filter((record) => rec
   const useCase = section(body, "Use case and purpose");
   return {
     title,
+    skillDelivery: metadata.skill_delivery || "generated",
     skillName,
     skillDescription: oneLine(metadata.skill_description || metadata.description || useCase || title),
     prerequisites: workflowItems(metadata.prerequisites, section(body, "Prerequisites")),
@@ -156,6 +157,10 @@ const records = promptFiles(promptsRoot).map(parsePrompt).filter((record) => rec
 });
 
 for (const record of records) {
+  if (record.skillDelivery === "package") {
+    console.log(`Using uploaded package for ${record.skillName}`);
+    continue;
+  }
   if (!record.promptText) throw new Error(`${record.skillName}: Prompt text is required to generate a skill.`);
   const filePath = path.join(repositoryRoot, "skills", record.skillName, "SKILL.md");
   if (write) {

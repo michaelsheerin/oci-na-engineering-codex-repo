@@ -22,9 +22,14 @@ function skillSlug(value) {
 }
 
 function skillPath(record) {
+  if (record.skill_delivery === "package") return "";
   if (record.skill_path) return record.skill_path;
   const candidate = path.join(repositoryRoot, "skills", skillSlug(record.skill_name || record.title), "SKILL.md");
   return fs.existsSync(candidate) ? `skills/${skillSlug(record.skill_name || record.title)}/SKILL.md` : "";
+}
+
+function skillPackagePath(record) {
+  return /^skill-packages\/[a-z0-9]+(?:-[a-z0-9]+)*\.zip$/.test(record.skill_package_path || "") ? record.skill_package_path : "";
 }
 
 const records = promptFiles(promptsRoot)
@@ -36,6 +41,7 @@ const records = promptFiles(promptsRoot)
       ...metadata,
       relativePath: path.relative(promptsRoot, record.filePath).replaceAll(path.sep, "/"),
       skillPath: skillPath(metadata),
+      skillPackagePath: skillPackagePath(metadata),
     };
   })
   .sort((a, b) => String(a.title).localeCompare(String(b.title)));
@@ -52,7 +58,7 @@ const sections = [...grouped.entries()]
   .map(([category, categoryRecords]) => {
     const rows = categoryRecords
       .map((record) => {
-        const skill = record.skillPath ? `[$${escapeCell(record.skill_name || skillSlug(record.title))}](../${encodeURI(record.skillPath)})` : "Prompt only";
+        const skill = record.skillPackagePath ? `[Download package](../${encodeURI(record.skillPackagePath)})` : record.skillPath ? `[$${escapeCell(record.skill_name || skillSlug(record.title))}](../${encodeURI(record.skillPath)})` : "Prompt only";
         return `| [${escapeCell(record.title)}](./${encodeURI(record.relativePath)}) | ${skill} | ${escapeCell(record.description)} | ${escapeCell(record.contact_name)} |`;
       })
       .join("\n");
@@ -61,7 +67,7 @@ const sections = [...grouped.entries()]
 
 const content = `# Prompt and Skill Library
 
-Each workflow form submission creates a readable prompt record and a paired Codex skill file. No review or manual publishing step is required.
+Each workflow form submission creates a readable prompt record and either a paired Codex skill file or a downloadable skill package. No review or manual publishing step is required.
 
 [Browse with search and filters](${browseUrl}) · [Submit a workflow](${submissionUrl}) · [Browse skill files](../skills/) · Use GitHub repository search with \`path:prompts\` or \`path:skills\` to find workflows.
 
