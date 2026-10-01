@@ -12,18 +12,18 @@ When a user invokes this skill without the required CSV, open the embedded requi
 
 When one or more declared required inputs are missing, open the embedded required-input form as the first task action.
 
-Before treating na_engineering_required_input_form.collect_required_inputs as unavailable, search the complete tool catalog, including deferred MCP tools, for:
+Before treating `na_engineering_required_input_form.collect_required_inputs` as unavailable, search the complete tool catalog, including deferred MCP tools, for:
 
-- mcp__na_engineering_required_input_form__collect_required_inputs
-- collect_required_inputs
-- required_input_form
+- `mcp__na_engineering_required_input_form__collect_required_inputs`
+- `collect_required_inputs`
+- `required_input_form`
 
 A missing entry from the initially visible tool list does not establish tool unavailability.
 
-If mcp__na_engineering_required_input_form__collect_required_inputs exists, invoke it immediately. Do not ask for required inputs in chat first.
+If `mcp__na_engineering_required_input_form__collect_required_inputs` exists, invoke it immediately. Do not ask for required inputs in chat first.
 
 
-If one or more required values are missing, invoke mcp__na_engineering_required_input_form__collect_required_inputs immediately with only the entries below that are still missing. Preserve each label and required setting:
+If one or more required values are missing, invoke `mcp__na_engineering_required_input_form__collect_required_inputs` immediately with only the entries below that are still missing. Preserve each label and required setting:
 
 ```json
 {
