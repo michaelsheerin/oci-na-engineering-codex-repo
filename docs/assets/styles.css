@@ -380,6 +380,7 @@ input:focus, select:focus { outline: 3px solid rgba(189, 44, 44, .18); border-co
 .prompt-text-source label { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-size: .84rem; font-weight: 600; }
 .prompt-text-source input { width: auto; margin: 0; }
 #prompt-text-upload, #skill-package-upload { display: grid; gap: 7px; }
+#prompt-text-paste[hidden], #prompt-text-upload[hidden], #skill-package-upload[hidden] { display: none; }
 .file-upload-label { color: var(--ink); font-size: .84rem; font-weight: 760; }
 #promptTextFile, #skillPackageFile { width: 100%; padding: 10px; border: 1px solid #b9c2cb; border-radius: 4px; background: var(--white); color: var(--ink); font: inherit; font-size: .88rem; }
 .skill-delivery-field { min-width: 0; margin: 0; padding: 0; border: 0; }
