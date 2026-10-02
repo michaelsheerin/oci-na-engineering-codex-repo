@@ -609,7 +609,7 @@ function prompt(record) {
       try {
         await downloadSkillPackage(record);
         packageDownloadButtons.forEach((button) => { button.textContent = "Downloaded"; });
-        packageDownloadStatus.textContent = "Extract the ZIP file, move its " + skillName + " folder into ~/.agents/skills/, then open a new Codex task and type $" + skillName + ".";
+        packageDownloadStatus.textContent = "Skill package downloaded.";
         window.setTimeout(() => { packageDownloadButtons.forEach((button) => { button.textContent = button.dataset.defaultLabel || "Download"; }); }, 1800);
       } catch (error) {
         packageDownloadStatus.textContent = error.message || "Download failed. Open the package from Record details instead.";
