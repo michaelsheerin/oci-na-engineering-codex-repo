@@ -185,7 +185,7 @@ function submissionNotice() {
   const path = publishedRecordPath(query.get("record"));
   const recordLink = path && status !== "deleted" ? '<a class="submission-notice-link" href="' + escapeHtml(repositoryUrl + "/blob/main/" + path.split("/").map(encodeURIComponent).join("/")) + '" target="_blank" rel="noreferrer">View Markdown record</a>' : "";
   const action = status === "created" ? "saved" : status === "deleted" ? "deleted" : "updated";
-  return '<section id="submission-notice" class="container submission-notice" role="status" aria-live="polite"><div class="submission-notice-copy"><strong>Prompt record ' + action + '.</strong><span>This temporary confirmation will disappear when you close it. The catalog is rebuilding and this library will update automatically after deployment.</span></div>' + recordLink + '<button id="dismiss-submission-notice" class="submission-notice-dismiss" type="button" aria-label="Dismiss status update" title="Dismiss status update">&times;</button></section>';
+  return '<section id="submission-notice" class="container submission-notice" role="status" aria-live="polite"><div class="submission-notice-copy"><strong>Prompt record ' + action + '.</strong><span id="submission-notice-status">This temporary confirmation will disappear when you close it. Checking for the deployed catalog update.</span></div>' + recordLink + '<button id="dismiss-submission-notice" class="submission-notice-dismiss" type="button" aria-label="Dismiss status update" title="Dismiss status update">&times;</button></section>';
 }
 
 function libraryRedirect(result) {
@@ -545,7 +545,7 @@ function prompt(record) {
   const skillPackageContents = (record.skillPackageContents || []).length ? '<ul class="skill-package-contents">' + record.skillPackageContents.map((item) => '<li><code>' + escapeHtml(item) + '</code></li>').join("") + "</ul>" : "";
   const skillPackageSection = skillPackageAvailable ? '<section class="skill-install skill-package-install"><div class="skill-install-heading"><div><p class="eyebrow">Codex skill package</p><h2>Download, extract, and install this skill</h2><p>This package contains the maintained <code>SKILL.md</code> file and its related scripts or references. It replaces standalone prompt text, so keep the package contents together.</p></div>' + skillPackageDownloadControl + '</div>' + skillDetails + '<div class="skill-prerequisites"><h3>Prompt prerequisites</h3>' + skillPrerequisites + '</div><dl class="definition-list skill-package-metadata"><div><dt>Package file</dt><dd><code>' + escapeHtml(record.skillPackageName || skillName + ".zip") + '</code></dd></div><div><dt>Package contents</dt><dd>' + skillPackageContents + "</dd></div></dl><ol class=\"skill-install-steps\"><li>Confirm that <code>~/.agents/skills/</code> exists. If the folder does not exist, complete <strong>One-Time Codex Skill Setup</strong> above.</li><li>Download the ZIP file" + skillPackageInlineDownloadControl + ".</li><li>Extract the ZIP file. Keep the included <code>" + escapeHtml(skillName) + "</code> folder intact, including <code>SKILL.md</code> and every supporting file.</li><li>Move the extracted <code>" + escapeHtml(skillName) + "</code> folder into <code>~/.agents/skills/</code>. The installed skill file must be at <code>~/.agents/skills/" + escapeHtml(skillName) + "/SKILL.md</code>.</li><li>Open a new Codex task and type:<ul class=\"skill-install-substeps\"><li>" + skillInvocationCopy + "</li></ul></li><li>Once you execute the skill, Codex will prompt you for any required inputs via a Form or Chat.<ul class=\"skill-install-substeps\"><li>View the Required Inputs in the section below, or copy the text along with your own entries to submit with the skill.</li></ul></li></ol><p id=\"download-skill-package-status\" class=\"copy-prompt-status\" aria-live=\"polite\"></p></section>" : "";
   const packageRecordUrl = skillPackageAvailable ? repositoryUrl + "/blob/main/" + record.skillPackagePath.split("/").map(encodeURIComponent).join("/") : "";
-  const details = '<div class="detail-table"><table><tbody><tr><th>Category</th><td>' + name(record.category) + '</td></tr><tr><th>Last updated</th><td>' + escapeHtml(record.lastReviewed || "Not provided") + '</td></tr><tr><th>Markdown record</th><td><a href="' + escapeHtml(markdownRecordUrl) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.path) + "</code></a></td></tr>" + (skillAvailable ? '<tr><th>Skill file</th><td><a href="' + escapeHtml(repositoryUrl + "/blob/main/" + record.skillPath.split("/").map(encodeURIComponent).join("/")) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.skillPath) + "</code></a></td></tr>" : "") + (skillPackageAvailable ? '<tr><th>Skill package</th><td><a href="' + escapeHtml(packageRecordUrl) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.skillPackagePath) + "</code></a></td></tr>" : "") + "</tbody></table></div>";
+  const details = '<div class="detail-table"><table><tbody><tr><th>Category</th><td>' + name(record.category) + '</td></tr><tr><th>Last updated</th><td>' + escapeHtml(displayDate(record.lastReviewed)) + '</td></tr><tr><th>Markdown record</th><td><a href="' + escapeHtml(markdownRecordUrl) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.path) + "</code></a></td></tr>" + (skillAvailable ? '<tr><th>Skill file</th><td><a href="' + escapeHtml(repositoryUrl + "/blob/main/" + record.skillPath.split("/").map(encodeURIComponent).join("/")) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.skillPath) + "</code></a></td></tr>" : "") + (skillPackageAvailable ? '<tr><th>Skill package</th><td><a href="' + escapeHtml(packageRecordUrl) + '" target="_blank" rel="noreferrer"><code>' + escapeHtml(record.skillPackagePath) + "</code></a></td></tr>" : "") + "</tbody></table></div>";
   const additionalNotes = [record.additionalInstructionsNotes, record.postExecutionSteps || record.nextSteps].filter(Boolean).join("\n\n");
   const additionalLink = record.additionalNotesLink || record.postExecutionLink;
   const oneTimeSetupSection = skillAvailable || skillPackageAvailable ? oneTimeSkillSetup("detail") : "";
@@ -890,7 +890,36 @@ function initialize() {
     window.location.replace(publishingServiceUrl + window.location.search);
     return;
   }
-  fetch("catalog.json", { cache: "no-store" }).then((response) => response.ok ? response.json() : Promise.reject(new Error("Catalog unavailable"))).then((records) => { prompts = records; render(); }).catch(() => { app.innerHTML = page("Prompt library", "Catalog unavailable", "The prompt records did not load.", '<section class="container fallback"><a class="button" href="' + repositoryUrl + '/tree/main/prompts">Browse prompt records in GitHub</a></section>'); });
+  fetchCatalog().then((records) => { prompts = records; render(); watchForPublishedRecord(); }).catch(() => { app.innerHTML = page("Prompt library", "Catalog unavailable", "The prompt records did not load.", '<section class="container fallback"><a class="button" href="' + repositoryUrl + '/tree/main/prompts">Browse prompt records in GitHub</a></section>'); });
+}
+
+function fetchCatalog() {
+  return fetch("catalog.json?refresh=" + Date.now(), { cache: "no-store" }).then((response) => response.ok ? response.json() : Promise.reject(new Error("Catalog unavailable")));
+}
+
+function watchForPublishedRecord() {
+  const query = new URLSearchParams(window.location.search);
+  const path = publishedRecordPath(query.get("record"));
+  const status = query.get("submission");
+  if (!path || (status !== "created" && status !== "updated")) return;
+
+  const noticeStatus = document.querySelector("#submission-notice-status");
+  const deadline = Date.now() + 90000;
+  const refresh = () => fetchCatalog().then((records) => {
+    if (records.some((record) => record.path === path)) {
+      prompts = records;
+      render();
+      const refreshedNoticeStatus = document.querySelector("#submission-notice-status");
+      if (refreshedNoticeStatus) refreshedNoticeStatus.textContent = "The updated catalog is ready. This temporary confirmation will disappear when you close it.";
+      return;
+    }
+    if (Date.now() < deadline) window.setTimeout(refresh, 4000);
+    else if (noticeStatus) noticeStatus.textContent = "The catalog is still publishing. Refresh this page shortly, or use the Markdown record link above.";
+  }).catch(() => {
+    if (Date.now() < deadline) window.setTimeout(refresh, 4000);
+  });
+
+  window.setTimeout(refresh, 3000);
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initialize, { once: true });
