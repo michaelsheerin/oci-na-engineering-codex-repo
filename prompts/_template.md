@@ -46,10 +46,6 @@ For package delivery, replace the generated-skill metadata with the package meta
 - Name: [Contributor name]
 - Email: [work email]
 
-## Source
-
-[Link to an issue, pull request, or supporting documentation.]
-
 ## Record details
 
 | Field | Value |

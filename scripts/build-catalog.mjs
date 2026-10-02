@@ -78,7 +78,6 @@ const records = promptFiles(promptsRoot)
     postExecutionLink: metadata.post_execution_link || "",
     contactName: metadata.contact_name,
     contactEmail: metadata.contact_email,
-    sourceIssue: metadata.source_issue || "",
     lastReviewed: metadata.last_reviewed,
     useCase: section(body, "Purpose and use case") || section(body, "Use case and purpose"),
     promptText: cleanPromptText(section(body, "Prompt text")),

@@ -50,10 +50,6 @@ function promptTitle(issue) {
   return title || `Prompt submission ${issue.number}`;
 }
 
-function sourceIssueUrl(issue) {
-  return String(issue.html_url || issue.url || "");
-}
-
 function issueIsPromptSubmission(issue) {
   return String(issue.body || "").includes("### Use case and purpose");
 }
@@ -76,7 +72,6 @@ export function buildPromptRecord(issue) {
   const contactName = section(body, "Your name");
   const contactEmail = section(body, "Your work email");
   const submittedAt = String(issue.created_at || new Date().toISOString()).slice(0, 10);
-  const sourceIssue = sourceIssueUrl(issue);
   const description = oneLine(useCase).slice(0, 220) || "No use case provided.";
   const issueNumber = Number(issue.number);
   const relativePath = existingPath || path.posix.join("prompts", category, `prompt-${issueNumber}.md`);
@@ -116,10 +111,6 @@ ${promptText}
 - Name: ${contactName || "Not provided."}
 - Email: ${contactEmail || "Not provided."}
 
-## Source
-
-${sourceIssue ? `[Original form submission](${sourceIssue})` : "Source issue not available."}
-
 ## Record details
 
 | Field | Value |
@@ -137,7 +128,6 @@ next_steps: ""
 additional_instructions_notes: ${yaml(additionalNotes)}
 contact_name: ${yaml(contactName)}
 contact_email: ${yaml(contactEmail)}
-source_issue: ${yaml(sourceIssue)}
 last_reviewed: ${yaml(submittedAt)}
 -->
 `;
