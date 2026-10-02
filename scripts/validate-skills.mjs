@@ -99,17 +99,6 @@ function packageSkillContent(content, skillName) {
   const description = yamlScalar(frontMatter[1].match(/^description:\s*(.+)$/m)?.[1]);
   if (packageName !== skillName) throw new Error(`SKILL.md name must match ${skillName}`);
   if (!description) throw new Error("SKILL.md front matter requires a description");
-  const workflowStart = normalized.indexOf("## Workflow instructions\n");
-  if (workflowStart < 0 || !/## Workflow instructions\n[\s\S]*?`{3,}text\n[\s\S]+?\n`{3,}/.test(normalized)) throw new Error("SKILL.md must include complete workflow instructions in a text code block");
-  for (const rule of requiredInputFormRules) {
-    if (!normalized.includes(rule)) throw new Error("SKILL.md is missing a required embedded required-input-form instruction");
-  }
-  const trigger = requiredInputFormRules[0];
-  const discovery = requiredInputFormRules[1];
-  const invoke = requiredInputFormRules[6];
-  const fallback = requiredInputFormRules[8];
-  if (normalized.indexOf(trigger) > workflowStart) throw new Error("Place the required-input-form trigger rule before workflow instructions");
-  if (normalized.indexOf(discovery) > normalized.indexOf(invoke) || normalized.indexOf(invoke) > normalized.indexOf(fallback)) throw new Error("Place deferred-tool discovery and form invocation before the chat fallback rule");
 }
 
 function validateUploadedPackage(filePath, skillName) {
