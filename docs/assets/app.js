@@ -231,6 +231,35 @@ async function copyText(value) {
   if (!copied) throw new Error("Clipboard access was unavailable.");
 }
 
+async function base64FileContent(file) {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  let binary = "";
+  for (let index = 0; index < bytes.length; index += 0x8000) binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
+  return btoa(binary);
+}
+
+function packageSubmissionPayload(formData, file) {
+  const payload = {};
+  formData.forEach((value, key) => {
+    if (typeof value !== "string") return;
+    if (key === "requiredInput") {
+      (payload.requiredInputs ||= []).push(value);
+    } else if (key === "prerequisite") {
+      (payload.prerequisites ||= []).push(value);
+    } else if (key === "existingSkillPackageContent") {
+      (payload.existingSkillPackageContents ||= []).push(value);
+    } else {
+      payload[key] = value;
+    }
+  });
+  payload.skillPackage = {
+    name: file.name,
+    size: file.size,
+    content: "",
+  };
+  return payload;
+}
+
 function skillSlug(value) {
   return String(value || "skill").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 64) || "skill";
 }
@@ -784,7 +813,15 @@ function form(record) {
         if (!/\.zip$/i.test(submittedPackage.name || "")) throw new Error("Upload a .zip skill package.");
         if (submittedPackage.size > 10 * 1024 * 1024) throw new Error("Upload a skill package no larger than 10 MB.");
       }
-      const response = await fetch("/api/prompt-submissions", { method: "POST", credentials: "same-origin", body: formData });
+      let requestOptions = { method: "POST", credentials: "same-origin", body: formData };
+      if (delivery === "package") {
+        if (!submittedPackage || typeof submittedPackage.arrayBuffer !== "function" || submittedPackage.size <= 0) throw new Error("Select a ZIP skill package before publishing.");
+        status.textContent = "Preparing your skill package for publishing...";
+        const payload = packageSubmissionPayload(formData, submittedPackage);
+        payload.skillPackage.content = await base64FileContent(submittedPackage);
+        requestOptions = { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) };
+      }
+      const response = await fetch("/api/prompt-submissions", requestOptions);
       const result = await response.json().catch(() => ({}));
       if (response.status === 401) {
         if (!editing) {
