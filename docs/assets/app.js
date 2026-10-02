@@ -393,7 +393,7 @@ function contributionGuide() {
   const submitLink = publisherHref("submit");
   const templateLink = repositoryUrl + "/blob/main/prompts/_template.md";
   const skillsLink = repositoryUrl + "/tree/main/skills";
-  app.innerHTML = page("Contribution guide", "Share a reusable Codex workflow", "One submission creates a readable Markdown record for people and either a generated SKILL.md file or an uploaded skill package for Codex.", '<section class="container guide-layout"><section class="guide-introduction"><div><p class="eyebrow">Preferred path</p><h2>Publish through the workflow form</h2><p>Complete the form, sign in with GitHub, and publish both artifacts together. The library refreshes after deployment.</p><div class="guide-actions"><a class="button" href="' + submitLink + '">Submit a prompt and skill</a><a class="button button-secondary" href="' + href("library") + '">Browse the library</a></div></div><aside class="guide-note"><h3>Before you submit</h3><p>Remove customer data, credentials, personal data, internal identifiers, and non-public source material. Replace variable data with placeholders.</p></aside></section><section class="guide-section"><p class="eyebrow">Required for a Codex skill</p><h2>What the form produces</h2><div class="guide-table"><table><thead><tr><th>Field</th><th>Purpose</th></tr></thead><tbody><tr><td>Title</td><td>Names the reader-friendly Markdown workflow record.</td></tr><tr><td>Codex skill name</td><td>A stable lowercase, hyphen-separated name, invoked as <code>$skill-name</code>.</td></tr><tr><td>Codex skill description</td><td>Tells Codex when the workflow applies.</td></tr><tr><td>Workflow delivery</td><td>Choose generated <code>SKILL.md</code> from prompt text, or upload a ZIP package containing the complete skill folder.</td></tr><tr><td>Skill instructions and prompt text</td><td>For generated skills, provides the full reusable workflow. Users may copy it for a one-time run or install it as a skill.</td></tr><tr><td>Skill package ZIP</td><td>For packaged skills, contains <code>&lt;skill-name&gt;/SKILL.md</code> and optional scripts, references, or assets. Package records show extraction instructions.</td></tr></tbody></table></div></section><section class="guide-info-grid"><article class="guide-section"><p class="eyebrow">Context for continued use</p><h2>Make the workflow operational</h2><ul class="guide-checklist"><li>List prerequisites and link to their instructions when they exist.</li><li>State required inputs, expected output, constraints, and validation checks.</li><li>List the post-execution work and link to the next prompt or runbook.</li><li>Use Markdown headings, bullets, bold text, and links in long-form fields.</li></ul></article><article class="guide-section guide-restricted"><p class="eyebrow">Using a downloaded skill</p><h2>Keep it available in Codex</h2><ol class="guide-checklist"><li>Download <code>SKILL.md</code> from a generated-skill record, or download and extract the ZIP from a package record.</li><li>Save the resulting <code>&lt;skill-name&gt;</code> folder under <code>~/.agents/skills/</code>.</li><li>Restart Codex if needed.</li><li>Start a new task and type <code>$&lt;skill-name&gt;</code>.</li></ol></article></section><section class="guide-direct"><div><p class="eyebrow">Repository source</p><h2>Review workflow source files</h2><p>Each workflow has a Markdown record under <code>prompts/</code> and either a paired skill file under <code>skills/</code> or an uploaded ZIP file under <code>skill-packages/</code>.</p></div><div class="guide-actions"><a class="button button-secondary" href="' + templateLink + '" target="_blank" rel="noreferrer">Open record template</a><a class="text-link-dark" href="' + skillsLink + '" target="_blank" rel="noreferrer">Browse skill files</a></div></section></section>');
+  app.innerHTML = page("Contribution guide", "Share a reusable Codex workflow", "One submission creates a readable Markdown record for people and either a generated SKILL.md file or an uploaded skill package for Codex.", '<section class="container guide-layout"><section class="guide-introduction"><div><p class="eyebrow">Preferred path</p><h2>Publish through the workflow form</h2><p>Complete the form, sign in with GitHub, and publish both artifacts together. The library refreshes after deployment.</p><div class="guide-actions"><a class="button" href="' + submitLink + '">Submit a prompt and skill</a><a class="button button-secondary" href="' + href("library") + '">Browse the library</a></div></div><aside class="guide-note"><h3>Before you submit</h3><p>Remove customer data, credentials, personal data, internal identifiers, and non-public source material. Replace variable data with placeholders.</p></aside></section><section class="guide-section"><p class="eyebrow">Required for a Codex skill</p><h2>What the form produces</h2><div class="guide-table"><table><thead><tr><th>Field</th><th>Purpose</th></tr></thead><tbody><tr><td>Title</td><td>Names the reader-friendly Markdown workflow record.</td></tr><tr><td>Codex skill name</td><td>A stable lowercase, hyphen-separated name, invoked as <code>$skill-name</code>.</td></tr><tr><td>Codex skill description</td><td>Tells Codex when the workflow applies.</td></tr><tr><td>Skill instructions or existing skill ZIP</td><td>Choose pasted instructions, a prompt text file, or a ZIP package containing <code>&lt;skill-name&gt;/SKILL.md</code> plus optional scripts, references, or assets.</td></tr></tbody></table></div></section><section class="guide-info-grid"><article class="guide-section"><p class="eyebrow">Context for continued use</p><h2>Make the workflow operational</h2><ul class="guide-checklist"><li>List prerequisites and link to their instructions when they exist.</li><li>State required inputs, expected output, constraints, and validation checks.</li><li>List the post-execution work and link to the next prompt or runbook.</li><li>Use Markdown headings, bullets, bold text, and links in long-form fields.</li></ul></article><article class="guide-section guide-restricted"><p class="eyebrow">Using a downloaded skill</p><h2>Keep it available in Codex</h2><ol class="guide-checklist"><li>Download <code>SKILL.md</code> from a generated-skill record, or download and extract the ZIP from a package record.</li><li>Save the resulting <code>&lt;skill-name&gt;</code> folder under <code>~/.agents/skills/</code>.</li><li>Restart Codex if needed.</li><li>Start a new Codex task and type <code>$&lt;skill-name&gt;</code>.</li></ol></article></section><section class="guide-direct"><div><p class="eyebrow">Repository source</p><h2>Review workflow source files</h2><p>Each workflow has a Markdown record under <code>prompts/</code> and either a paired skill file under <code>skills/</code> or an uploaded ZIP file under <code>skill-packages/</code>.</p></div><div class="guide-actions"><a class="button button-secondary" href="' + templateLink + '" target="_blank" rel="noreferrer">Open record template</a><a class="text-link-dark" href="' + skillsLink + '" target="_blank" rel="noreferrer">Browse skill files</a></div></section></section>');
   const skillInstallSteps = app.querySelector(".guide-restricted .guide-checklist");
   if (skillInstallSteps) skillInstallSteps.innerHTML = '<li>Create the user-level <code>~/.agents/skills/</code> folder once.</li><li>For a generated skill, create a <code>&lt;skill-name&gt;</code> subfolder and save the downloaded file there as <code>SKILL.md</code>. For a package, extract the ZIP and move its top-level skill folder there.</li><li>Start a new Codex task and type <code>$&lt;skill-name&gt;</code>.</li>';
 }
@@ -616,23 +616,16 @@ function additionalNotesField(value, linkValue) {
   return '<fieldset class="form-field long-text-link-field"><legend>Additional Instructions and Post-Run Notes</legend><small class="field-description">Follow-up work, publishing steps, validation checks, edge cases, and other guidance after the workflow runs. Markdown headings, bullets, bold text, links, and paragraph breaks render in the published workflow.</small><textarea id="additionalNotes" name="additionalNotes" rows="5">' + escapeHtml(value || "") + '</textarea>' + linkReveal("Additional Instructions and Post-Run Notes Link", "additionalNotesLink", linkValue, "If available, provide a link to additional post-run instructions, a related prompt, or a runbook.") + '</fieldset>';
 }
 
-function skillDeliveryField(delivery, editing) {
-  if (editing) {
-    const deliveryLabel = delivery === "package" ? "Uploaded skill package" : "Generated SKILL.md";
-    const description = delivery === "package" ? "This workflow stays on the uploaded package route. You can replace the ZIP file below, but its delivery type is fixed." : "This workflow stays on the generated SKILL.md route. Its prompt text continues to generate the skill file.";
-    return '<fieldset class="form-field skill-delivery-field"><legend>Workflow delivery</legend><small class="field-description">' + description + '</small><p class="delivery-value">' + deliveryLabel + '</p><input type="hidden" name="skillDelivery" value="' + delivery + '"></fieldset>';
-  }
-  return '<fieldset class="form-field skill-delivery-field"><legend>Workflow delivery <strong class="required-label">Required</strong></legend><small class="field-description">Choose either a generated skill from prompt text or a ZIP package that already contains SKILL.md and supporting files.</small><div class="prompt-text-source" role="radiogroup" aria-label="Workflow delivery"><label><input type="radio" name="skillDelivery" value="generated" checked> Generate SKILL.md from prompt text</label><label><input type="radio" name="skillDelivery" value="package"> Upload a skill package ZIP</label></div></fieldset>';
+function skillPackageUpload(delivery, editing, packageName) {
+  const description = editing ? "Optional. Upload a replacement ZIP to update the packaged skill files. Leave this blank to retain the current package." : "Upload one ZIP containing a top-level skill folder with SKILL.md. Optional scripts, references, and assets stay inside that folder.";
+  return '<div id="skill-package-upload"' + (delivery === "package" ? "" : " hidden") + '><small class="field-description">' + description + '</small><label class="file-upload-label" for="skillPackageFile">Existing skill ZIP file' + (editing ? "" : ' <strong class="required-label">Required</strong>') + '</label><input id="skillPackageFile" name="skillPackageFile" type="file" accept=".zip,application/zip"' + (delivery === "package" && !editing ? " required" : "") + '><small class="file-help">Package limits: 10 MB compressed, 100 files, and 25 MB after extraction. The ZIP must contain <code>&lt;skill-name&gt;/SKILL.md</code> at the top level. Its scripts do not run in this library.</small>' + (packageName ? '<small class="file-help">Current package: <code>' + escapeHtml(packageName) + "</code></small>" : "") + "</div>";
 }
 
-function promptTextField(value, delivery) {
-  return '<fieldset id="generated-skill-source" class="form-field prompt-text-field"' + (delivery === "package" ? " hidden" : "") + '><legend>Skill instructions and prompt text <strong class="required-label">Required</strong></legend><small class="field-description">The complete workflow Codex should follow. It stays unchanged in the copyable prompt and becomes the instruction section of the generated <code>SKILL.md</code> file. Paste text or upload a plain-text or Markdown file.</small><div class="prompt-text-source" role="radiogroup" aria-label="Prompt text source"><label><input type="radio" name="promptTextSource" value="paste" checked> Paste text</label><label><input type="radio" name="promptTextSource" value="upload"> Upload file</label></div><div id="prompt-text-paste"><textarea id="promptText" name="promptText" rows="16" required>' + escapeHtml(value || "") + '</textarea></div><div id="prompt-text-upload" hidden><input id="promptTextFile" name="promptTextFile" type="file" accept=".txt,.md,.markdown,text/plain,text/markdown"><small class="file-help">Accepted file types: .txt, .md, or .markdown. Maximum size: 60 KB.</small></div></fieldset>';
-}
-
-function skillPackageField(delivery, editing, packageName) {
-  const label = editing ? "Replace skill package ZIP" : "Skill package ZIP";
-  const description = editing ? "Optional. Upload a replacement ZIP when you need to update the packaged skill files. Leave this blank to retain the current package." : "Upload one ZIP file containing a top-level skill folder with SKILL.md. Optional scripts, references, and assets belong under that same folder.";
-  return '<fieldset id="skill-package-upload" class="form-field skill-package-field"' + (delivery === "package" ? "" : " hidden") + '><legend>' + label + (editing ? "" : ' <strong class="required-label">Required</strong>') + '</legend><small class="field-description">' + description + '</small><input id="skillPackageFile" name="skillPackageFile" type="file" accept=".zip,application/zip"' + (delivery === "package" && !editing ? " required" : "") + '><small class="file-help">Package limits: 10 MB compressed, 100 files, and 25 MB after extraction. ZIP files must contain <code>&lt;skill-name&gt;/SKILL.md</code> at the top level. The package is stored and downloaded as submitted. Its scripts do not run in this library.</small>' + (packageName ? '<small class="file-help">Current package: <code>' + escapeHtml(packageName) + "</code></small>" : "") + "</fieldset>";
+function promptTextField(value, delivery, editing, packageName, selectedSource) {
+  const packageSource = delivery === "package" ? "package" : selectedSource === "upload" ? "upload" : "paste";
+  const lockGenerated = editing && delivery === "generated";
+  const lockPackage = editing && delivery === "package";
+  return '<fieldset class="form-field prompt-text-field"><legend>Skill instructions or existing skill ZIP <strong class="required-label">Required</strong></legend><small class="field-description">Choose how to provide this workflow. Paste instructions, upload a prompt text file, or upload an existing skill ZIP that contains SKILL.md and any supporting files.</small><div class="prompt-text-source" role="radiogroup" aria-label="Skill instructions source"><label><input type="radio" name="promptTextSource" value="paste"' + (packageSource === "paste" ? " checked" : "") + (lockPackage ? " disabled" : "") + '> Paste text</label><label><input type="radio" name="promptTextSource" value="upload"' + (packageSource === "upload" ? " checked" : "") + (lockPackage ? " disabled" : "") + '> Upload prompt text file</label><label><input type="radio" name="promptTextSource" value="package"' + (packageSource === "package" ? " checked" : "") + (lockGenerated ? " disabled" : "") + '> Upload existing skill ZIP file</label></div><div id="prompt-text-paste"' + (packageSource === "paste" ? "" : " hidden") + '><textarea id="promptText" name="promptText" rows="16"' + (packageSource === "paste" ? " required" : "") + '>' + escapeHtml(value || "") + '</textarea></div><div id="prompt-text-upload"' + (packageSource === "upload" ? "" : " hidden") + '><input id="promptTextFile" name="promptTextFile" type="file" accept=".txt,.md,.markdown,text/plain,text/markdown"><small class="file-help">Accepted file types: .txt, .md, or .markdown. Maximum size: 60 KB.</small></div>' + skillPackageUpload(delivery, editing, packageName) + "</fieldset>";
 }
 
 function form(record) {
@@ -647,6 +640,7 @@ function form(record) {
   const skillDescription = value("skillDescription", record?.useCase || record?.skillDescription || record?.description);
   const additionalNotes = value("additionalNotes", [record?.additionalInstructionsNotes, record?.postExecutionSteps || record?.nextSteps].filter(Boolean).join("\n\n"));
   const skillDelivery = value("skillDelivery", record?.skillDelivery || (record?.skillPackagePath ? "package" : "generated"));
+  const promptTextSource = value("promptTextSource", skillDelivery === "package" ? "package" : "paste");
   const sharingStandard = '<article class="form-intro"><h2>' + (editing ? "Update process" : "Create a prompt and Codex skill") + '</h2><p>This submission creates a readable Markdown workflow record and either a generated <code>SKILL.md</code> file or an uploaded skill package for Codex.</p><p>Fields marked Required create a valid workflow. The remaining fields make the workflow easier to prepare, validate, and continue after execution.</p><p>Remove customer data, credentials, personal data, internal identifiers, and non-public source material. Use placeholders for variable information.</p><div class="form-formatting-note"><strong>Formatting</strong><p>Plain text stays plain. Use Markdown for headings, bullets, bold text, code, or links. Prompt text is preserved exactly for copying and is placed inside generated skill files.</p></div><a class="text-link-dark" href="' + href("contribute") + '">Read the contribution guide</a></article>';
   const categoryField = '<label class="form-field" for="category"><span>Category</span><small class="field-description">The work area used to organize and filter this record.</small><select id="category" name="category"><option value="">Select a category</option>' + categoryOptions + "</select></label>";
   const fields = input("Title", "title", value("title", record?.title), 0, "A concise, action-oriented name for the workflow.", { required: true })
@@ -657,9 +651,7 @@ function form(record) {
     + requiredInputsField(value("requiredInputs", existingRequiredInputs))
     + input("Expected output", "expectedOutput", value("expectedOutput", record?.expectedOutput), 5, "What Codex should produce and the checks that confirm a usable result.")
     + additionalNotesField(additionalNotes, value("additionalNotesLink", record?.additionalNotesLink || record?.postExecutionLink))
-    + skillDeliveryField(skillDelivery, editing)
-    + promptTextField(value("promptText", record?.promptText), skillDelivery)
-    + skillPackageField(skillDelivery, editing, record?.skillPackageName)
+    + promptTextField(value("promptText", record?.promptText), skillDelivery, editing, record?.skillPackageName, promptTextSource)
     + input("Your name", "contactName", value("contactName", record?.contactName), 0, "The person to contact with questions about this record.")
     + input("Your work email", "contactEmail", value("contactEmail", record?.contactEmail), 0, "The work email for questions or feedback about this record.");
   const deleteAction = editing ? '<button class="button button-danger delete-prompt" type="button">Delete prompt</button>' : "";
@@ -671,32 +663,26 @@ function form(record) {
   const promptTextUpload = document.querySelector("#prompt-text-upload");
   const promptTextArea = document.querySelector("#promptText");
   const promptTextFile = document.querySelector("#promptTextFile");
-  const generatedSkillSource = document.querySelector("#generated-skill-source");
   const skillPackageUpload = document.querySelector("#skill-package-upload");
   const skillPackageFile = document.querySelector("#skillPackageFile");
   const titleInput = document.querySelector("#title");
   const skillNameInput = document.querySelector("#skillName");
-  const selectedSkillDelivery = () => document.querySelector('input[name="skillDelivery"]:checked')?.value || document.querySelector('input[name="skillDelivery"][type="hidden"]')?.value || "generated";
+  const selectedSkillDelivery = () => document.querySelector('input[name="promptTextSource"]:checked')?.value === "package" ? "package" : "generated";
   const setPromptTextSource = () => {
-    const generatedSkill = selectedSkillDelivery() === "generated";
-    const uploadSelected = generatedSkill && document.querySelector('input[name="promptTextSource"]:checked')?.value === "upload";
-    promptTextPaste.hidden = uploadSelected;
+    const source = document.querySelector('input[name="promptTextSource"]:checked')?.value || "paste";
+    const uploadSelected = source === "upload";
+    const packageSelected = source === "package";
+    promptTextPaste.hidden = source !== "paste";
     promptTextUpload.hidden = !uploadSelected;
-    promptTextArea.disabled = !generatedSkill || uploadSelected;
-    promptTextArea.required = generatedSkill && !uploadSelected;
-    promptTextFile.disabled = !generatedSkill || !uploadSelected;
-  };
-  const setSkillDelivery = () => {
-    const packageSkill = selectedSkillDelivery() === "package";
-    generatedSkillSource.hidden = packageSkill;
-    skillPackageUpload.hidden = !packageSkill;
-    skillPackageFile.disabled = !packageSkill;
-    skillPackageFile.required = packageSkill && !editing;
-    setPromptTextSource();
+    skillPackageUpload.hidden = !packageSelected;
+    promptTextArea.disabled = source !== "paste";
+    promptTextArea.required = source === "paste";
+    promptTextFile.disabled = !uploadSelected;
+    skillPackageFile.disabled = !packageSelected;
+    skillPackageFile.required = packageSelected && !editing;
   };
   document.querySelectorAll('input[name="promptTextSource"]').forEach((option) => option.addEventListener("change", setPromptTextSource));
-  document.querySelectorAll('input[name="skillDelivery"]').forEach((option) => option.addEventListener("change", setSkillDelivery));
-  setSkillDelivery();
+  setPromptTextSource();
   const formElement = document.querySelector("#prompt-form");
   const deleteButtons = [...document.querySelectorAll(".delete-prompt")];
   const saveButtons = [...formElement.querySelectorAll("button[type=submit]")];
@@ -771,6 +757,7 @@ function form(record) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const delivery = selectedSkillDelivery();
+    formData.set("skillDelivery", delivery);
     const status = document.querySelector("#submission-status");
     saveButtons.forEach((button) => { button.disabled = true; });
     status.textContent = delivery === "package" ? "Publishing your Markdown record and skill package..." : "Publishing your Markdown record and Codex skill...";
@@ -786,6 +773,7 @@ function form(record) {
       } else if (uploadSelected) {
         formData.set("promptText", "");
       }
+      if (delivery === "package") formData.set("promptText", "");
       const submittedPackage = formData.get("skillPackageFile");
       if (delivery === "package" && submittedPackage && typeof submittedPackage === "object" && submittedPackage.size > 0) {
         if (!/\.zip$/i.test(submittedPackage.name || "")) throw new Error("Upload a .zip skill package.");
