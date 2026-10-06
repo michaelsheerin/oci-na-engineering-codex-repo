@@ -90,15 +90,20 @@ function zipEnd(bytes) {
   throw new Error("is not a valid ZIP archive");
 }
 
-function packageSkillContent(content, skillName) {
+function packageSkillContent(content) {
   const normalized = content.replace(/^\uFEFF/, "").replace(/\r\n/g, "\n");
   const frontMatter = normalized.match(/^---\n([\s\S]*?)\n---\n/);
   if (!frontMatter) throw new Error("SKILL.md must start with YAML front matter");
   const yamlScalar = (value) => String(value || "").trim().replace(/^(?:\"([^\"]*)\"|'([^']*)')$/, (_, doubleQuoted, singleQuoted) => doubleQuoted ?? singleQuoted);
   const packageName = yamlScalar(frontMatter[1].match(/^name:\s*(.+)$/m)?.[1]);
   const description = yamlScalar(frontMatter[1].match(/^description:\s*(.+)$/m)?.[1]);
-  if (packageName !== skillName) throw new Error(`SKILL.md name must match ${skillName}`);
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(packageName)) throw new Error("SKILL.md front matter name must use lowercase letters, numbers, and hyphens");
   if (!description) throw new Error("SKILL.md front matter requires a description");
+  return packageName;
+}
+
+function packageNamingMismatch(packageName) {
+  return `Skill package naming mismatch. SKILL.md defines the skill name as "${packageName}".\n\nRename the ZIP file to: ${packageName}.zip\nRename the top-level folder inside the ZIP to: ${packageName}\n\nThen upload the renamed ZIP file.`;
 }
 
 function validateUploadedPackage(filePath, skillName) {
@@ -144,11 +149,10 @@ function validateUploadedPackage(filePath, skillName) {
     offset = nextOffset;
   }
   const files = entries.filter((entry) => !entry.directory && !entry.path.startsWith("__MACOSX/") && !entry.path.endsWith("/.DS_Store") && entry.path !== ".DS_Store");
-  const root = `${skillName}/`;
   if (!files.length || files.length > 100 || files.reduce((total, entry) => total + entry.uncompressedSize, 0) > 25 * 1024 * 1024) throw new Error("has too many files or too much extracted content");
-  if (files.some((entry) => !entry.path.startsWith(root))) throw new Error(`must place every file inside ${skillName}/`);
-  const skillEntry = files.find((entry) => entry.path === `${root}SKILL.md`);
-  if (!skillEntry || files.filter((entry) => entry.path.endsWith("/SKILL.md")).length !== 1) throw new Error(`must contain exactly one ${skillName}/SKILL.md file`);
+  const skillEntries = files.filter((entry) => entry.path.endsWith("/SKILL.md"));
+  if (skillEntries.length !== 1) throw new Error("must contain exactly one SKILL.md file");
+  const skillEntry = skillEntries[0];
   const localOffset = skillEntry.localOffset;
   if (zipUint32(bytes, localOffset) !== 0x04034b50) throw new Error("has an invalid local file entry");
   const dataStart = localOffset + 30 + zipUint16(bytes, localOffset + 26) + zipUint16(bytes, localOffset + 28);
@@ -156,7 +160,9 @@ function validateUploadedPackage(filePath, skillName) {
   if (dataEnd > bytes.length) throw new Error("has truncated SKILL.md data");
   const skillBytes = skillEntry.method === 0 ? bytes.subarray(dataStart, dataEnd) : inflateRawSync(bytes.subarray(dataStart, dataEnd));
   if (skillBytes.length !== skillEntry.uncompressedSize) throw new Error("has invalid extracted SKILL.md data");
-  packageSkillContent(new TextDecoder("utf-8", { fatal: true }).decode(skillBytes), skillName);
+  const packageName = packageSkillContent(new TextDecoder("utf-8", { fatal: true }).decode(skillBytes));
+  const root = `${packageName}/`;
+  if (skillName !== packageName || path.basename(filePath) !== `${packageName}.zip` || files.some((entry) => !entry.path.startsWith(root))) throw new Error(packageNamingMismatch(packageName));
 }
 
 for (const record of promptFiles(promptsRoot).map(parsePrompt).filter((record) => record.errors.length === 0)) {
